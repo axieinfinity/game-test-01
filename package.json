@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@tienhp/menu_system_with_zenject": "^1.0.0",
+    "@umm/unirx_observabletween": "umm/unirx_observabletween"
+  }
+}
