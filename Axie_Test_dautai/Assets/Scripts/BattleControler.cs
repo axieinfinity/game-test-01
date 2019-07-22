@@ -15,6 +15,7 @@ public class BattleControler : MonoBehaviour {
     public GameObject panelWin;
     public Text resultText;
     public GameObject yourTurnText;
+    public GameObject StartParticle;
     #endregion
 
     bool isCanAttack = false;
@@ -25,7 +26,14 @@ public class BattleControler : MonoBehaviour {
     void Start () {
         instance = this;
         //set id and enemy for Players in list, so player can expand
-		for(int i = 0; i<PlayersList.Count; i++)
+        //setStartValue();
+        
+        
+	}
+
+    public void setStartValue()
+    {
+        for (int i = 0; i < PlayersList.Count; i++)
         {
             PlayersList[i].id = i;
             if (i == 0)
@@ -38,9 +46,10 @@ public class BattleControler : MonoBehaviour {
             }
         }
         curID = myPlayerID;
-        SoundManager.instance.playStartGame();
+        StartParticle.SetActive(true);
         StartCoroutine(IEWaitToTurn());
-	}
+        SoundManager.instance.playStartGame();
+    }
 
     IEnumerator IEWaitToTurn()
     {

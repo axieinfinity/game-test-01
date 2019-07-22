@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 3505465775
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: axie3999
+      Dependencies: {}
+    Info_1:
+      Name: axie5000
+      Dependencies: {}
