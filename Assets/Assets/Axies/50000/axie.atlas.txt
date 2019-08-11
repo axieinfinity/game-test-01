@@ -1,0 +1,139 @@
+
+axie.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back
+  rotate: false
+  xy: 1087, 342
+  size: 174, 166
+  orig: 174, 166
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 2, 78
+  size: 576, 430
+  orig: 576, 430
+  offset: 0, 0
+  index: -1
+body-pattern
+  rotate: true
+  xy: 1455, 397
+  size: 61, 107
+  orig: 61, 107
+  offset: 0, 0
+  index: -1
+ear-left
+  rotate: true
+  xy: 1263, 398
+  size: 110, 190
+  orig: 110, 190
+  offset: 0, 0
+  index: -1
+ear-right
+  rotate: false
+  xy: 1564, 372
+  size: 94, 86
+  orig: 94, 86
+  offset: 0, 0
+  index: -1
+eyes
+  rotate: false
+  xy: 2, 26
+  size: 204, 50
+  orig: 204, 50
+  offset: 0, 0
+  index: -1
+eyes-angry
+  rotate: false
+  xy: 580, 110
+  size: 232, 90
+  orig: 232, 90
+  offset: 0, 0
+  index: -1
+eyes-shut
+  rotate: false
+  xy: 1455, 460
+  size: 204, 48
+  orig: 204, 48
+  offset: 0, 0
+  index: -1
+horn
+  rotate: true
+  xy: 868, 356
+  size: 152, 217
+  orig: 152, 217
+  offset: 0, 0
+  index: -1
+leg-back-left
+  rotate: false
+  xy: 502, 6
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+leg-back-right
+  rotate: true
+  xy: 340, 2
+  size: 74, 88
+  orig: 74, 88
+  offset: 0, 0
+  index: -1
+leg-front-right
+  rotate: true
+  xy: 340, 2
+  size: 74, 88
+  orig: 74, 88
+  offset: 0, 0
+  index: -1
+leg-front-left
+  rotate: false
+  xy: 430, 4
+  size: 70, 72
+  orig: 70, 72
+  offset: 0, 0
+  index: -1
+mouth
+  rotate: false
+  xy: 1745, 436
+  size: 40, 72
+  orig: 40, 72
+  offset: 0, 0
+  index: -1
+mouth-bite
+  rotate: true
+  xy: 1661, 430
+  size: 78, 82
+  orig: 78, 82
+  offset: 0, 0
+  index: -1
+mouth-eat
+  rotate: false
+  xy: 1263, 343
+  size: 157, 53
+  orig: 157, 53
+  offset: 0, 0
+  index: -1
+mouth-open
+  rotate: true
+  xy: 208, 26
+  size: 50, 130
+  orig: 50, 130
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 580, 354
+  size: 286, 154
+  orig: 286, 154
+  offset: 0, 0
+  index: -1
+tail
+  rotate: false
+  xy: 580, 202
+  size: 248, 150
+  orig: 248, 150
+  offset: 0, 0
+  index: -1
