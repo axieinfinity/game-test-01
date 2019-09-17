@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -458,6 +458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 481692760}
   - component: {fileID: 481692761}
+  - component: {fileID: 481692762}
   m_Layer: 10
   m_Name: Green
   m_TagString: Untagged
@@ -490,6 +491,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84a11441c1f2e4415b1a368bd9842af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &481692762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481692759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c64fb73c7b34ebd9bdb81a110f9b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &676423453
@@ -1559,6 +1572,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1872258109}
   - component: {fileID: 1872258110}
+  - component: {fileID: 1872258111}
   m_Layer: 10
   m_Name: Cyan
   m_TagString: Untagged
@@ -1591,6 +1605,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84a11441c1f2e4415b1a368bd9842af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1872258111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872258108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c64fb73c7b34ebd9bdb81a110f9b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1896703727
@@ -1636,9 +1662,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3992cb6d78b4c7ab7641dcbee67092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleSize: 5
-  cyanPrefab: {fileID: 1872258110}
-  greenPerfab: {fileID: 481692761}
+  gridSize: 1
+  cyanPrefab: {fileID: 1872258111}
+  greenPrefab: {fileID: 481692762}
 --- !u!1 &2004741108
 GameObject:
   m_ObjectHideFlags: 0
