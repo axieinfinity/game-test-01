@@ -295,6 +295,50 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!1 &395427837
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 395427839}
+  - component: {fileID: 395427838}
+  m_Layer: 0
+  m_Name: Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &395427838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395427837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b966b794b74feaa7fedd246e08a91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameCamera: {fileID: 147686250}
+--- !u!4 &395427839
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395427837}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &459711127
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,7 +665,11 @@ MonoBehaviour:
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
-  onClick: []
+  onClick:
+  - mTarget: {fileID: 395427838}
+    mMethodName: ZoomOut
+    mParameters: []
+    oneShot: 0
 --- !u!114 &753715325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -876,7 +924,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1004646267}
   - component: {fileID: 1004646268}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1024,7 +1072,11 @@ MonoBehaviour:
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
-  onClick: []
+  onClick:
+  - mTarget: {fileID: 395427838}
+    mMethodName: ZoomIn
+    mParameters: []
+    oneShot: 0
 --- !u!114 &1187262328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,7 +1115,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 50
+  aspectRatio: 1
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -1210,8 +1262,8 @@ MonoBehaviour:
   calculateTangents: 0
   logErrors: 0
   disableRenderingOnOverride: 1
-  _animationName: 
-  loop: 0
+  _animationName: action/idle
+  loop: 1
   timeScale: 1
 --- !u!23 &1398294259
 MeshRenderer:
@@ -1342,7 +1394,7 @@ Camera:
   m_GameObject: {fileID: 1481651535}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 3
   m_BackGroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
@@ -1387,7 +1439,7 @@ GameObject:
   - component: {fileID: 1729999107}
   - component: {fileID: 1729999106}
   - component: {fileID: 1729999105}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: UI Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1598,7 +1650,7 @@ GameObject:
   - component: {fileID: 2004741109}
   - component: {fileID: 2004741111}
   - component: {fileID: 2004741110}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1692,7 +1744,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 256
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
