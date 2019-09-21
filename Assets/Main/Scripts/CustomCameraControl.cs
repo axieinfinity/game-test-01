@@ -2,64 +2,66 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomCameraControl : MonoBehaviour
+namespace Gameplay
 {
-
-    public float baseCameraSize = 12;
-    [SerializeField] private Vector2 referenceCameraRatio;
-    [SerializeField] private Camera targetCamera;
-
-    float zoomScale = 0;
-    float widthHeightRatio = 1;
-
-    private void Reset()
+    public class CustomCameraControl : MonoBehaviour
     {
-        targetCamera = GetComponent<Camera>();
-    }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (targetCamera == null) this.enabled = false;
-    }
+        public float baseCameraSize = 12;
+        [SerializeField] private Vector2 referenceCameraRatio;
+        [SerializeField] private Camera targetCamera;
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        var ratio = Screen.width * 1f / Screen.height;
-        var diff = Mathf.Abs(ratio - this.widthHeightRatio);
-        if (diff > float.Epsilon) ResetCameraRatio();
-    }
+        float zoomScale = 0;
+        float widthHeightRatio = 1;
 
-    void ResetCameraRatio()
-    {
-        var ratio = Screen.width * 1f / Screen.height;
-        this.widthHeightRatio = ratio;
+        private void Reset()
+        {
+            targetCamera = GetComponent<Camera>();
+        }
 
-        var targetWidthHeightRatio = this.referenceCameraRatio.x / this.referenceCameraRatio.y;
-        var cameraSize = baseCameraSize * Mathf.Pow(1.2f, zoomScale);
+        // Start is called before the first frame update
+        void Start()
+        {
+            if (targetCamera == null) this.enabled = false;
+        }
 
-        //if ratio is greater than layout is overflowing by width, apply baseCameraSize
-        if (ratio >= targetWidthHeightRatio)
-            targetCamera.orthographicSize = cameraSize;
-        else
-            targetCamera.orthographicSize = cameraSize / ratio * targetWidthHeightRatio;
-    }
+        // Update is called once per frame
+        void LateUpdate()
+        {
+            var ratio = Screen.width * 1f / Screen.height;
+            var diff = Mathf.Abs(ratio - this.widthHeightRatio);
+            if (diff > float.Epsilon) ResetCameraRatio();
+        }
 
-    public void FunctionOnCameraDrag(Vector2 screenPercent)
-    {
-        var diff = Vector3.one;
-        diff.x = screenPercent.x * targetCamera.orthographicSize / Screen.height * Screen.width;
-        diff.y = screenPercent.y * targetCamera.orthographicSize;
-        diff.z = 0;
+        void ResetCameraRatio()
+        {
+            var ratio = Screen.width * 1f / Screen.height;
+            this.widthHeightRatio = ratio;
 
-        targetCamera.transform.localPosition -= diff * 2;
-    }
+            var targetWidthHeightRatio = this.referenceCameraRatio.x / this.referenceCameraRatio.y;
+            var cameraSize = baseCameraSize * Mathf.Pow(1.2f, zoomScale);
 
-    public void FunctionOnCameraZoom(int level)
-    {
-        zoomScale += level;
-        zoomScale = Mathf.Max(-8, zoomScale);
-        ResetCameraRatio();
+            //if ratio is greater than layout is overflowing by width, apply baseCameraSize
+            if (ratio >= targetWidthHeightRatio)
+                targetCamera.orthographicSize = cameraSize;
+            else
+                targetCamera.orthographicSize = cameraSize / ratio * targetWidthHeightRatio;
+        }
+
+        public void FunctionOnCameraDrag(Vector2 screenPercent)
+        {
+            var diff = Vector3.one;
+            diff.x = screenPercent.x * targetCamera.orthographicSize / Screen.height * Screen.width;
+            diff.y = screenPercent.y * targetCamera.orthographicSize;
+            diff.z = 0;
+
+            targetCamera.transform.localPosition -= diff * 2;
+        }
+
+        public void FunctionOnCameraZoom(int level)
+        {
+            zoomScale = Mathf.Clamp(zoomScale + level, -8, 20);
+            ResetCameraRatio();
+        }
     }
 }
