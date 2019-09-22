@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0136e6e18a864f90ba434ed125249f7, type: 3}
-  m_Name: DisplayActionTailFlurry
+  m_Script: {fileID: 11500000, guid: 1c454e85d6f9f459394baf85e924fb9e, type: 3}
+  m_Name: Defender
   m_EditorClassIdentifier: 
-  actionSource: attack/melee/tail-multi-slap
-  actionTarget: defense/hit-by-multi-attack
-  delaySourceToTarget: 0.4
+  unitName: Defender
+  hp: 30
+  skeleton: {fileID: 11400000, guid: 6b093778741c44b6fabae731a05db14e, type: 2}

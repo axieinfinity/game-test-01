@@ -6,13 +6,15 @@ namespace Gameplay
 {
 	public partial class Model : MonoBehaviour
 	{
-        public int ringCount = 1;
-        int size;
+        [SerializeField] private int ringCount = 1;
+        [SerializeField] private UnitPreset presetAttacker, presetDefender;
+        private int size;
 
         [Space(32)]
 		public UnityEngine.Events.UnityEvent onReady;
+        public UnityEngine.Events.UnityEvent onGameover;
 
-		[System.Serializable] public class OnGameplayEvent : UnityEngine.Events.UnityEvent<Event> { }
+        [System.Serializable] public class OnGameplayEvent : UnityEngine.Events.UnityEvent<Event> { }
 		public OnGameplayEvent onGameplayEvent;
 
         private Tile centerTile;
@@ -93,6 +95,8 @@ namespace Gameplay
                     unit.attacker = true;
                 }
 
+            foreach (var unit in units)
+                unit.hp = unit.maxHp = (unit.attacker ? presetAttacker : presetDefender).hp;
         }
 
         Unit SpawnUnitAtTile(int x, int y)
@@ -146,14 +150,26 @@ namespace Gameplay
                 if (unit != null && unit.dead == false) turnOrder.Add(unit);
             }
 
+            foreach (var unit in turnOrder)
+                unit.countered = false;
+
             //foreach unit in the unit order
             foreach (var unit in turnOrder)
                 PlayUnitTurn(unit);
 
+            int attackerCount = 0;
+            int defenderCount = 0;
+
             foreach (var unit in turnOrder)
+            {
                 RemoveDeadUnit(unit);
+                if (unit.dead) continue;
 
+                if (unit.attacker) attackerCount++;
+                else defenderCount++;
+            }
 
+            if (attackerCount == 0 || defenderCount == 0) onGameover?.Invoke();
         }
 
         Tile GetTileAtPos(int x, int y)
@@ -239,7 +255,10 @@ namespace Gameplay
             var cubePos2 = AxielToCube(pos2);
 
             //calculate cube distance
-            return Mathf.Max(cubePos2.x - cubePos1.x, cubePos2.y - cubePos1.y, cubePos2.z - cubePos1.z);
+            return Mathf.Max(
+                Mathf.Abs(cubePos2.x - cubePos1.x),
+                Mathf.Abs(cubePos2.y - cubePos1.y),
+                Mathf.Abs(cubePos2.z - cubePos1.z));
         }
 
         static Vector3 epsilonCube = new Vector3(float.Epsilon, 2 * float.Epsilon, -3 * float.Epsilon);

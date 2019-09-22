@@ -11,8 +11,9 @@ namespace Gameplay
         [SerializeField] private Vector2 referenceCameraRatio;
         [SerializeField] private Camera targetCamera;
 
-        float zoomScale = 0;
-        float widthHeightRatio = 1;
+        private float zoomScale = 0;
+        private float widthHeightRatio = 1;
+        private Rect rectViewLimit;
 
         private void Reset()
         {
@@ -33,6 +34,20 @@ namespace Gameplay
             if (diff > float.Epsilon) ResetCameraRatio();
         }
 
+        public void SetViewLimit(Rect viewLimit)
+        {
+            this.rectViewLimit = viewLimit;
+            ResetCameraRatio();
+        }
+
+        void ClampCameraPos()
+        {
+            var pos = targetCamera.transform.localPosition;
+            pos.x = Mathf.Clamp(pos.x, rectViewLimit.xMin, rectViewLimit.xMax);
+            pos.y = Mathf.Clamp(pos.y, rectViewLimit.yMin, rectViewLimit.yMax);
+            targetCamera.transform.localPosition = pos;
+        }
+
         void ResetCameraRatio()
         {
             var ratio = Screen.width * 1f / Screen.height;
@@ -46,6 +61,8 @@ namespace Gameplay
                 targetCamera.orthographicSize = cameraSize;
             else
                 targetCamera.orthographicSize = cameraSize / ratio * targetWidthHeightRatio;
+
+            ClampCameraPos();
         }
 
         public void FunctionOnCameraDrag(Vector2 screenPercent)
@@ -56,6 +73,8 @@ namespace Gameplay
             diff.z = 0;
 
             targetCamera.transform.localPosition -= diff * 2;
+
+            ClampCameraPos();
         }
 
         public void FunctionOnCameraZoom(int level)

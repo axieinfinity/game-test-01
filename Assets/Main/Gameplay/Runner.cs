@@ -12,9 +12,13 @@ namespace Gameplay
         [SerializeField] private Display.UnitDisplay baseUnitDisplay;
         private List<Display.TileDisplay> tiles = new List<Display.TileDisplay>();
         private List<Display.UnitDisplay> units = new List<Display.UnitDisplay>();
+        private bool gameover;
 
         public OnMaxViewportSizeChanged onMaxViewportSizeChanged;
-        [System.Serializable] public class OnMaxViewportSizeChanged : UnityEngine.Events.UnityEvent<float> { }
+        [System.Serializable] public class OnMaxViewportSizeChanged : UnityEngine.Events.UnityEvent<Rect> { }
+
+        [SerializeField] private DisplayAction sampleAttackDisplayAction;
+
 
         private static Dictionary<System.Type, System.Func<Event, IEnumerator>> mapEventToCoroutineFunction;
 
@@ -39,6 +43,8 @@ namespace Gameplay
 
         public void FunctionModelOnReady()
         {
+            gameover = false;
+
             baseTileDisplay.gameObject.SetActive(false);
             baseTileDisplay.Reinstantiate(model.Tiles);
 
@@ -59,18 +65,48 @@ namespace Gameplay
                 unit.transform.position = tile.transform.position;
             }
 
+            onMaxViewportSizeChanged?.Invoke(CalculateViewportSize());
+
             StopAllCoroutines();
             StartCoroutine(CoGameplay());
-            
-        }
+		}
 
-        IEnumerator CoGameplay()
+		public Rect CalculateViewportSize()
+		{
+			Rect result = Rect.zero;
+			foreach (var tile in tiles)
+			{
+				var pos = tile.transform.position;
+                result.xMin = Mathf.Min(result.xMin, pos.x);
+                result.xMax = Mathf.Max(result.xMax, pos.x);
+                result.yMin = Mathf.Min(result.yMin, pos.y);
+                result.yMax = Mathf.Max(result.yMax, pos.y);
+            }
+            return result;
+		}
+
+		IEnumerator CoGameplay()
         {
             while (true)
             {
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(3.5f);
+
+                if (gameover) yield break;
                 model.PlayNextRound();
             }
+        }
+
+        public void FunctionSetGameover()
+        {
+            gameover = true;
+            StartCoroutine(CoGameover());
+        }
+
+        IEnumerator CoGameover()
+        {
+            yield return new WaitForSeconds(5);
+            foreach (var unit in units)
+                if (unit.gameObject.activeSelf) unit.PlayVictory();
         }
 
         public void FunctionPlayEvent(Event e)
@@ -93,7 +129,16 @@ namespace Gameplay
 
         IEnumerator OnEvent(EventUnitAttackUnit e)
         {
-            yield return true;
+            var unit = units[e.sourceIndex];
+            var target = units[e.targetIndex];
+            yield return unit.CoPlayAttack(target, sampleAttackDisplayAction, e);
+        }
+
+        IEnumerator OnEvent(EventUnitDead e)
+        {
+            var unit = units[e.index];
+            yield return unit.CoPlayDead();
+
         }
 	}
 }

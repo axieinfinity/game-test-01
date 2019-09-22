@@ -10,5 +10,6 @@ namespace Gameplay
 
         public int hp, maxHp;
         public bool dead;
+        public bool countered;
     }
 }

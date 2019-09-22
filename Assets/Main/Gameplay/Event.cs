@@ -24,5 +24,12 @@ namespace Gameplay
 		public int sourceIndex;
 		public int targetIndex;
 		public int damage;
+        public int remainingHp;
+        public bool counterAttack;
 	}
+
+    public class EventUnitDead : Event
+    {
+        public int index;
+    }
 }
