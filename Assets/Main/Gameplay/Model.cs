@@ -6,7 +6,7 @@ namespace Gameplay
 {
 	public partial class Model : MonoBehaviour
 	{
-        [SerializeField] private int ringCount = 1;
+        [SerializeField] public int ringCount = 1;
         [SerializeField] private UnitPreset presetAttacker, presetDefender;
         private int size;
 
@@ -32,12 +32,16 @@ namespace Gameplay
                 ringCount = Settings.ringCount;
         }
 
-
         void Start()
 		{
+            RestartModel();
+        }
+
+        public void RestartModel()
+        {
             RespawnTiles();
             RespawnUnits();
-			onReady?.Invoke();
+            onReady?.Invoke();
         }
 
         void RespawnTiles()
@@ -126,22 +130,6 @@ namespace Gameplay
             return unit;
         }
 
-        public IEnumerable<Tile> Tiles
-        {
-            get
-            {
-                foreach (var tile in tiles) yield return tile;
-            }
-        }
-
-        public IEnumerable<Unit> Units
-        {
-            get
-            {
-                foreach (var unit in units) yield return unit;
-            }
-        }
-
         List<Unit> turnOrder = new List<Unit>();
         public void PlayNextRound()
         {
@@ -175,130 +163,8 @@ namespace Gameplay
                 else defenderCount++;
             }
 
-            if (attackerCount == 0 || defenderCount == 0) onGameover?.Invoke();
-        }
-
-        Tile GetTileAtPos(int x, int y)
-        {
-            if (x < 0 || y < 0 || x >= size || y >= size) return null;
-            return tileMap[x, y];
-        }
-
-        IEnumerable<Tile> IterateTileFromCenter()
-        {
-            var dia = ringCount * 2 + 1;
-            foreach (var tile in IterateFromTile(tileMap[size / 2, size / 2], dia))
-                yield return tile;
-        }
-
-        IEnumerable<Tile> IterateFromTile(Tile tile, int diameter)
-        {
-            if (tiles[tile.index] != tile) yield break;
-            var x = tile.position.x;
-            var y = tile.position.y;
-
-            yield return tile;
-            for (var i = 1; i <= diameter; i++)
-            {
-                y += 1;
-
-                //ITERATE CLOCKWISE
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    x++; y--;
-                }
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    y--;
-                }
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    x--;
-                }
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    x--; y++;
-                }
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    y++;
-                }
-                for (var d = 0; d < i; d++)
-                {
-                    var t = GetTileAtPos(x, y); if (t != null) yield return t;
-                    x++;
-                }
-            }
-        }
-
-        Vector3Int AxielToCube(Vector2Int axiel)
-        {
-            return new Vector3Int(axiel.x, -axiel.x - axiel.y, axiel.y);
-        }
-
-        Vector2Int CubeToAxiel(Vector3Int cube)
-        {
-            return new Vector2Int(cube.x, cube.z);
-        }
-
-        Vector2Int CubeToAxiel(Vector3 cube)
-        {
-            return new Vector2Int(Mathf.RoundToInt(cube.x), Mathf.RoundToInt(cube.z));
-        }
-
-        int Distance(Tile t1, Tile t2)
-        {
-            var pos1 = t1.position;
-            var pos2 = t2.position;
-
-            //convert axiel to cube format
-            var cubePos1 = AxielToCube(pos1);
-            var cubePos2 = AxielToCube(pos2);
-
-            //calculate cube distance
-            return Mathf.Max(
-                Mathf.Abs(cubePos2.x - cubePos1.x),
-                Mathf.Abs(cubePos2.y - cubePos1.y),
-                Mathf.Abs(cubePos2.z - cubePos1.z));
-        }
-
-        static Vector3 epsilonCube = new Vector3(float.Epsilon, 2 * float.Epsilon, -3 * float.Epsilon);
-        static Vector3[] cubeOffsets = {
-            new Vector3(0, 0, 0),
-            new Vector3(-1, 1, 0),
-            new Vector3(0, -1, 1),
-            new Vector3(1, 0, -1),
-            new Vector3(1, -1, 0),
-            new Vector3(0, 1, -1),
-            new Vector3(-1, 0, 1)
-        };
-
-        Tile GetNextFreeTileTowardTile(Tile tileFrom, Tile tileTo)
-        {
-            if (tileFrom == tileTo) return tileFrom;
-
-            var dist = Distance(tileFrom, tileTo);
-            Vector2Int pos1 = tileFrom.position;
-            Vector2Int pos2 = tileTo.position;
-
-            Vector3 cubePos1 = AxielToCube(pos1) + epsilonCube;
-            Vector3 cubePos2 = AxielToCube(pos2) + epsilonCube;
-
-            foreach (var offset in cubeOffsets)
-            {
-                var targetTilePos = CubeToAxiel(Vector3.Lerp(cubePos1 + offset, cubePos2, 1f / dist));
-                var targetTile = GetTileAtPos(targetTilePos.x, targetTilePos.y);
-
-                if (targetTile == null || mapTileToUnit.ContainsKey(targetTile)) continue;
-                return targetTile;
-            }
-
-            return tileFrom;
+			UpdateReport();
+			if (attackerCount == 0 || defenderCount == 0) onGameover?.Invoke();
         }
 
     }

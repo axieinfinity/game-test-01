@@ -36,5 +36,11 @@ namespace Gameplay.UI
         {
             Time.timeScale = pausing ? 0 : speedRate;
         }
+
+        public void FunctionBackToMainMenu()
+        {
+            Time.timeScale = 1;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Scenes/Menu");
+        }
     }
 }

@@ -8,7 +8,9 @@ namespace Gameplay
 	{
 
         [SerializeField] private Model model;
-		[SerializeField] private Display.TileDisplay baseTileDisplay;
+        [SerializeField] private FPSCounter fpsCounter;
+        [SerializeField] private UI.Report uiReport;
+        [SerializeField] private Display.TileDisplay baseTileDisplay;
         [SerializeField] private Display.UnitDisplay baseUnitDisplay;
         private List<Display.TileDisplay> tiles = new List<Display.TileDisplay>();
         private List<Display.UnitDisplay> units = new List<Display.UnitDisplay>();
@@ -20,11 +22,12 @@ namespace Gameplay
         [SerializeField] private DisplayAction sampleAttackDisplayAction;
 
 
-        private static Dictionary<System.Type, System.Func<Event, IEnumerator>> mapEventToCoroutineFunction;
+        private Dictionary<System.Type, System.Func<Event, IEnumerator>> mapEventToCoroutineFunction;
 
         private void Awake()
         {
-            if (mapEventToCoroutineFunction != null) return;
+            Application.targetFrameRate = 60;
+
             mapEventToCoroutineFunction = new Dictionary<System.Type, System.Func<Event, IEnumerator>>();
             var type = this.GetType();
             foreach (var method in type.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
@@ -39,7 +42,11 @@ namespace Gameplay
                     return method.Invoke(this, new object[] { e }) as IEnumerator;
                 };
             }
+
+            if (Settings.benchmarkMode) benchmarking = true;
         }
+
+        bool benchmarking = false;
 
         public void FunctionModelOnReady()
         {
@@ -68,8 +75,28 @@ namespace Gameplay
             onMaxViewportSizeChanged?.Invoke(CalculateViewportSize());
 
             StopAllCoroutines();
-            StartCoroutine(CoGameplay());
+
+            if (benchmarking)
+                StartCoroutine(BenchmarkDelay());
+            else
+                StartCoroutine(CoGameplay());
 		}
+
+        IEnumerator BenchmarkDelay()
+        {
+            yield return new WaitForSecondsRealtime(3);
+            bool aboveFPS = fpsCounter.FPS >= Settings.minBenchmarkFPS;
+
+            if (aboveFPS)
+            {
+                model.ringCount++;
+            }
+            else {
+                model.ringCount--;
+                benchmarking = false;
+            }
+            model.RestartModel();
+        }
 
 		public Rect CalculateViewportSize()
 		{
@@ -124,6 +151,7 @@ namespace Gameplay
         {
             var unit = units[e.unitIndex];
             var tile = tiles[e.tileIndex];
+
             yield return unit.CoMoveToTile(tile);
         }
 
