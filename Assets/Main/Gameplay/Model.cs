@@ -26,6 +26,12 @@ namespace Gameplay
         private Dictionary<Unit, Tile> mapUnitToTile;
         private Dictionary<Tile, Unit> mapTileToUnit;
 
+        private void Awake()
+        {
+            if (Settings.enabled)
+                ringCount = Settings.ringCount;
+        }
+
 
         void Start()
 		{

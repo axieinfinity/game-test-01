@@ -192,6 +192,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 166089721947636562}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &425668761 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2218447797221139535}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b69215a22558d40edb6a65ff51f01427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &439014014
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,8 +677,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1779097509}
-        m_MethodName: SetViewLimit
+      - m_Target: {fileID: 425668761}
+        m_MethodName: FunctionOnViewLimitChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -998,6 +1010,23 @@ MonoBehaviour:
   baseCameraSize: 24
   referenceCameraRatio: {x: 1334, y: 750}
   targetCamera: {fileID: 1518516162}
+  OrthographicSize: 0
+  onCameraTransformChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 425668761}
+        m_MethodName: FunctionOnCustomCameraControlTransformChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: Gameplay.CustomCameraControl+OnCameraTransformChanged, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &1540960863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1147,7 +1176,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1779097507}
-  - component: {fileID: 1779097509}
   - component: {fileID: 1779097508}
   m_Layer: 0
   m_Name: Minimap Camera
@@ -1212,18 +1240,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1779097509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1779097506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb9bfbdcf9d954d03bda21fb1827219f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1782405800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1578,6 +1594,86 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1518516162}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: minimapCam
+      value: 
+      objectReference: {fileID: 1779097508}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: mainCam
+      value: 
+      objectReference: {fileID: 1518516162}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: customCameraControl
+      value: 
+      objectReference: {fileID: 1518516165}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: minimapRenderTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 82c82f972634c4e618f5e6e79501b97b, type: 2}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1518516165}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FunctionOnCameraMoved
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraPosition.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1518516165}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FunctionOnCameraZoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750718385822308617, guid: 2edf76e89d05d4e80839cdf26377145b,
+        type: 3}
+      propertyPath: onMinimapSetCameraScroll.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2edf76e89d05d4e80839cdf26377145b, type: 3}
 --- !u!1001 &7608713316100078639

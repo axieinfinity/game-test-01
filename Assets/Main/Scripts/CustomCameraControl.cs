@@ -14,6 +14,10 @@ namespace Gameplay
         private float zoomScale = 0;
         private float widthHeightRatio = 1;
         private Rect rectViewLimit;
+        public float OrthographicSize;// { get; private set; }
+
+        [System.Serializable] public class OnCameraTransformChanged : UnityEngine.Events.UnityEvent<CustomCameraControl> { }
+        public OnCameraTransformChanged onCameraTransformChanged;
 
         private void Reset()
         {
@@ -38,6 +42,7 @@ namespace Gameplay
         {
             this.rectViewLimit = viewLimit;
             ResetCameraRatio();
+            onCameraTransformChanged?.Invoke(this);
         }
 
         void ClampCameraPos()
@@ -55,6 +60,7 @@ namespace Gameplay
 
             var targetWidthHeightRatio = this.referenceCameraRatio.x / this.referenceCameraRatio.y;
             var cameraSize = baseCameraSize * Mathf.Pow(1.2f, zoomScale);
+            OrthographicSize = cameraSize;
 
             //if ratio is greater than layout is overflowing by width, apply baseCameraSize
             if (ratio >= targetWidthHeightRatio)
@@ -75,12 +81,21 @@ namespace Gameplay
             targetCamera.transform.localPosition -= diff * 2;
 
             ClampCameraPos();
+            onCameraTransformChanged?.Invoke(this);
+        }
+
+        public void FunctionOnCameraMoved(Vector3 position)
+        {
+            targetCamera.transform.localPosition = position;
+            ClampCameraPos();
+            onCameraTransformChanged?.Invoke(this);
         }
 
         public void FunctionOnCameraZoom(int level)
         {
             zoomScale = Mathf.Clamp(zoomScale + level, -8, 20);
             ResetCameraRatio();
+            onCameraTransformChanged?.Invoke(this);
         }
     }
 }
