@@ -84,7 +84,9 @@ namespace Gameplay
 
         IEnumerator BenchmarkDelay()
         {
-            yield return new WaitForSecondsRealtime(3);
+			uiReport.ReportBenchmarking(model.ringCount);
+
+			yield return new WaitForSecondsRealtime(3);
             bool aboveFPS = fpsCounter.FPS >= Settings.minBenchmarkFPS;
 
             if (aboveFPS)
@@ -94,7 +96,8 @@ namespace Gameplay
             else {
                 model.ringCount--;
                 benchmarking = false;
-            }
+				uiReport.ReportBenchmarkingCompleted(model.ringCount);
+			}
             model.RestartModel();
         }
 

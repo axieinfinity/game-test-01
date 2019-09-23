@@ -33,7 +33,8 @@ namespace Gameplay
         }
 
         void Start()
-		{
+        {
+            SetupReport();
             RestartModel();
         }
 

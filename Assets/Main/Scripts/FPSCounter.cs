@@ -12,7 +12,7 @@ namespace Gameplay
         // Update is called once per frame
         void Update()
         {
-            deltaTime = (deltaTime + Time.unscaledDeltaTime) / 2;
+            deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
             FPS = 1 / deltaTime;
         }
     }
