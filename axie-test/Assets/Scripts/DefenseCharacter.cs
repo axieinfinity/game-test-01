@@ -5,16 +5,16 @@ public class DefenseCharacter : Character
 {
     public override void BehaveOnUserInput()
     {
-        // var enemy = GridController.instance.GetAdjacentEnemy(gridPosition, CharacterModel.CHARACTER_TYPE.ATTACK);
-        // if (enemy != null)
-        // {
-        //     Attack(enemy);
-        // }
-        // else
-        // {
-        //     SetAnimOnClick();a
-        // }
-        SetAnimOnClick();
+        var enemy = GridController.instance.GetAdjacentEnemy(gridPosition, CharacterModel.CHARACTER_TYPE.ATTACK);
+        if (enemy != null)
+        {
+            Attack(enemy);
+        }
+        else
+        {
+            SetAnimOnClick();
+        }
+        // SetAnimOnClick();
     }
 
     // private void Attack(Character enemy)
