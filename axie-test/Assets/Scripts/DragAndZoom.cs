@@ -11,6 +11,8 @@ public class DragAndZoom : MonoBehaviour
     Camera mainCamera;
     const float limX = 12.5f;
     const float limY = 8.5f;
+    int baseGridHeight = 3;
+    int baseGridWidth = 3;
     bool allowToDrag = true;
     bool allowToZoom = true;
     Vector3 startBGScale;
@@ -21,6 +23,8 @@ public class DragAndZoom : MonoBehaviour
     {
         mainCamera = Camera.main;
         startBGScale = background.transform.localScale;
+        baseGridHeight = GridController.instance.height;
+        baseGridWidth = GridController.instance.width;
     }
 
     void Update()
@@ -75,7 +79,10 @@ public class DragAndZoom : MonoBehaviour
     private void CheckOutOfLimit()
     {
         var pos = mainCamera.transform.position;
-        if (Mathf.Abs(pos.x) > limX || Math.Abs(pos.y) > limY)
+        var dX = GridController.instance.width - baseGridWidth;
+        var dY = GridController.instance.height - baseGridHeight;
+
+        if (Mathf.Abs(pos.x) > (limX + dX) || Math.Abs(pos.y) > (limY + dY))
         {
             allowToDrag = false;
         }

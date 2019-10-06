@@ -155,9 +155,9 @@ public class GameController : CustomSingleton<GameController>
         }
         if (gameSettings.gameMode == GameSettings.GAME_MODE.TEST_CREATE_MAP)
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.C) && FPSDisplay.instance.GetFps() >= 30f)
             {
-                
+                GridController.instance.UpdateSize(2);
             }
         }
     }

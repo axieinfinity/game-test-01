@@ -8,8 +8,8 @@ using static GameConstants;
 
 public class GridController : CustomSingleton<GridController>
 {
+    public int width, height;
     [SerializeField] CellController prefab;
-    [SerializeField] int width, height;
     Dictionary<Vector2, CellController> cellsDictionary;
 
     public override void Awake()
@@ -52,7 +52,7 @@ public class GridController : CustomSingleton<GridController>
         cellsDictionary[gridPosition].character = null;
     }
 
-    private void CreateGrid()
+    public void CreateGrid()
     {
         var j = 0;
         var k = 0;
@@ -72,8 +72,6 @@ public class GridController : CustomSingleton<GridController>
                         obj.transform.transform.localPosition = new Vector3(i + offset, j * mul);
                         obj.InitValues(i + offset, j * mul);
 
-                        // var t = i + offset;
-                        // t = t < 0 ? Mathf.FloorToInt(t) : Mathf.CeilToInt(t);
                         obj.name += ".[" + (i + offset) + "." + (j * mul) + "]";
                         cellsDictionary.Add(new Vector2((i + offset), j * mul), obj);
                     }
@@ -148,6 +146,58 @@ public class GridController : CustomSingleton<GridController>
             }
         }
         return result;
+    }
+
+    public void UpdateSize(int value)
+    {
+
+        var newWidth = width + value;
+        var newHeight = height + value;
+
+        var j = 0;
+        var k = 0;
+        var offset = 0f;
+        while (j <= newHeight)
+        {
+            for (int i = -newWidth + k; i <= newWidth; i++)
+            {
+                offset = k * -0.5f;
+
+                //if index is contained by existed cell then ingore
+                if ((-width + k <= i && i <= width) && (-height <= j && j <= height))
+                {
+                    continue;
+                }
+
+                var obj = default(CellController);
+                if (j > 0)
+                {
+                    for (int p = 0; p < 2; p++)
+                    {
+                        var mul = p == 0 ? 1 : -1;
+                        obj = Instantiate<CellController>(prefab, transform);
+                        obj.transform.transform.localPosition = new Vector3(i + offset, j * mul);
+                        obj.InitValues(i + offset, j * mul);
+
+                        obj.name += ".[" + (i + offset) + "." + (j * mul) + "]";
+                        cellsDictionary.Add(new Vector2((i + offset), j * mul), obj);
+                    }
+                }
+                else
+                {
+                    obj = Instantiate<CellController>(prefab, transform);
+                    obj.transform.localPosition = new Vector3(i, j, 0);
+                    obj.InitValues(i, j);
+                    obj.name += ".[" + i + "." + (j) + "]";
+                    cellsDictionary.Add(new Vector2(i, j), obj);
+                }
+            }
+            k++;
+            j++;
+        }
+        
+        width = newWidth;
+        height = newHeight;
     }
 
     public List<CellController> GetAdjacentCells(Vector2 gPos)
