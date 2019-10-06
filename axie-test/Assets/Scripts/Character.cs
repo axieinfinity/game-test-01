@@ -2,6 +2,7 @@
 using Spine.Unity;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using System;
 
 public class Character : MonoBehaviour, IHitable
 {
@@ -13,6 +14,7 @@ public class Character : MonoBehaviour, IHitable
     public static bool canClick = true;
     public CharacterModel model;
     public Vector2 gridPosition;
+    public int circleIndex;
 
     CharacterHPBar hpBar;
     [SerializeField, SpineAnimation] string idle, move, attack, onclick, behit;
@@ -157,8 +159,18 @@ public class Character : MonoBehaviour, IHitable
     {
         state = CHARACTER_STATE.INACTIVE;
         GridController.instance.RemoveCharacterFromCell(gridPosition);
-        GameController.instance.RemoveCharacter(this, model.type);
+        GameController.instance.RemoveCharacter(this, model.type, circleIndex);
         PowerBar.instance.UpdateValue(model.type, model.startHP);
+        hpBar.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
+    public void RemoveYourSelf()
+    {
+        // state = CHARACTER_STATE.INACTIVE;
+        // GridController.instance.RemoveCharacterFromCell(gridPosition);
+        // GameController.instance.RemoveCharacter(this, model.type, circleIndex);
+        hpBar.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 }

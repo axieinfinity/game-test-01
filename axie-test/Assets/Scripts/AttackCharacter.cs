@@ -23,7 +23,7 @@ public class AttackCharacter : Character
         }
         else
         {
-            var closestEnemy = GameController.instance.FindClosestEnemy(transform.position);
+            var closestEnemy = GameController.instance.FindClosestEnemy(transform.position, circleIndex);
             if (closestEnemy != null)
             {
                 var list = GridController.instance.GetAdjacentCells(gridPosition);

@@ -28,19 +28,18 @@ public class GridController : CustomSingleton<GridController>
         CreateGrid();
     }
 
-    public List<CellController> GetPointByCircleIndex(int circleIndex)
+    public List<CellController> GetPointsByCircleIndex(int circleIndex)
     {
         if (circleIndex > (width > height ? width : height))
         {
             return null;
         }
         var result = new List<CellController>();
-        foreach (var item in cellsDictionary)
+        foreach (var item in cellsDictionary.Values)
         {
-            var ele = item.Value;
-            if (ele.circleIndex.Equals(circleIndex))
+            if (item.circleIndex.Equals(circleIndex))
             {
-                result.Add(ele);
+                result.Add(item);
             }
         }
         return result;
@@ -195,7 +194,7 @@ public class GridController : CustomSingleton<GridController>
             k++;
             j++;
         }
-        
+
         width = newWidth;
         height = newHeight;
     }

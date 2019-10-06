@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class GameConstants
 {
-    public static Vector3 NaV = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+// public static Vector3 NaV = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 }

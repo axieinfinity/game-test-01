@@ -9,4 +9,5 @@ public class GameSettings : ScriptableObject
         TEST_CREATE_MAP
     }
     public GAME_MODE gameMode;
+    [Range(2, 5)] public int gridSizeIncrease;
 }

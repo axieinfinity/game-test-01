@@ -34,12 +34,7 @@ public class CellController : MonoBehaviour
         }
         circleIndex = (int)mag;
 
-        // var t = i + offset;
-        // t = t < 0 ? Mathf.FloorToInt(t) : Mathf.CeilToInt(t);
         gridPosition = new Vector2(i, j);
-
-        // this.Log("i: " + i + ".j: " + j);
-        // circleIndex = (new Vector2Int(i, j).magnitude);
     }
 
     // public void HighLight()

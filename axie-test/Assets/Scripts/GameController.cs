@@ -20,29 +20,36 @@ public class GameController : CustomSingleton<GameController>
 
     [SerializeField] Transform charactersContainer;
     [SerializeField] Character defenseCharacterPrefab, attackCharacterPrefab;
+    List<int> defenseCirlceIndicies, attackCircleIndicies;
     List<Character> defenseList, attackList;
-    float lastUpdate = 0f;
-    const float updateTick = 2f;
+    Dictionary<int, List<Character>> defenseDictionary, attackDictionary;
     const float speedUpGamePerClick = 2f;
     const float maxSpeedUpGame = 6f;
 
     public override void Awake()
     {
-        defenseList = new List<Character>();
-        attackList = new List<Character>();
+        // defenseList = new List<Character>();
+        // attackList = new List<Character>();
+        defenseDictionary = new Dictionary<int, List<Character>>();
+        attackDictionary = new Dictionary<int, List<Character>>();
+        defenseCirlceIndicies = new List<int>();
+        defenseCirlceIndicies.Add(1);
+        attackCircleIndicies = new List<int>();
+        // attackCircleIndicies.Add(3);
+        attackCircleIndicies.Add(3);
 
         this.RegisterListener(EventID.ON_GRID_HAS_INIT, param => OnGridHasInit());
         base.Awake();
     }
 
-    public Character FindClosestEnemy(Vector3 position)
+    public Character FindClosestEnemy(Vector3 position, int circleIndex)
     {
         Character result = null;
         var min = float.MaxValue;
-
-        for (int i = 0; i < defenseList.Count; i++)
+        var list = defenseDictionary[circleIndex];
+        for (int i = 0; i < list.Count; i++)
         {
-            var ele = defenseList[i];
+            var ele = list[i];
             var distance = Vector2.Distance(position, ele.transform.position);
             if (distance < min)
             {
@@ -75,9 +82,12 @@ public class GameController : CustomSingleton<GameController>
     public float GetTotalDefenseHP()
     {
         var result = 0f;
-        for (int i = 0; i < defenseList.Count; i++)
+        foreach (var list in defenseDictionary.Values)
         {
-            result += defenseList[i].model.startHP;
+            for (int i = 0; i < list.Count; i++)
+            {
+                result += list[i].model.startHP;
+            }
         }
         return result;
     }
@@ -85,19 +95,23 @@ public class GameController : CustomSingleton<GameController>
     public float GetTotalAttackHP()
     {
         var result = 0f;
-        for (int i = 0; i < attackList.Count; i++)
+        foreach (var list in attackDictionary.Values)
         {
-            result += attackList[i].model.startHP;
+            for (int i = 0; i < list.Count; i++)
+            {
+                result += list[i].model.startHP;
+            }
         }
         return result;
     }
 
-    public Character FindClosestEnemyToMove(Vector3 position)
+    public Character FindClosestEnemyToMove(Vector3 position, int circleIndex)
     {
         var availableCharacters = new List<Character>();
-        for (int i = 0; i < defenseList.Count; i++)
+        var list = defenseDictionary[circleIndex];
+        for (int i = 0; i < list.Count; i++)
         {
-            var ele = defenseList[i];
+            var ele = list[i];
             var adjacentCells = GridController.instance.GetAdjacentCells(ele.gridPosition);
             for (int j = 0; j < adjacentCells.Count; j++)
             {
@@ -126,8 +140,17 @@ public class GameController : CustomSingleton<GameController>
 
     private void OnGridHasInit()
     {
-        defenseList = SpawnCharacter(defenseCharacterPrefab, 1);
-        attackList = SpawnCharacter(attackCharacterPrefab, 3);
+        for (int i = 0; i < defenseCirlceIndicies.Count; i++)
+        {
+            var ele = defenseCirlceIndicies[i];
+            defenseDictionary.Add(ele, SpawnCharacter(defenseCharacterPrefab, ele));
+        }
+        for (int i = 0; i < attackCircleIndicies.Count; i++)
+        {
+            var ele = attackCircleIndicies[i];
+            attackDictionary.Add(ele, SpawnCharacter(attackCharacterPrefab, ele));
+        }
+
         PowerBar.instance.Init(GetTotalDefenseHP(), GetTotalAttackHP());
     }
 
@@ -157,46 +180,91 @@ public class GameController : CustomSingleton<GameController>
         {
             if (Input.GetKeyDown(KeyCode.C) && FPSDisplay.instance.GetFps() >= 30f)
             {
-                GridController.instance.UpdateSize(2);
+                GridController.instance.UpdateSize(gameSettings.gridSizeIncrease);
+                FillDefenseCharacters();
+                FillAttackCharacters();
             }
+        }
+    }
+
+    private int FillDefenseCharacters()
+    {
+        var result = 0;
+        var mostOutCircleIndex = defenseCirlceIndicies[defenseCirlceIndicies.Count - 1];
+        defenseCirlceIndicies.Add(mostOutCircleIndex + 1);
+        for (int i = defenseCirlceIndicies.IndexOf(mostOutCircleIndex) + 1; i < defenseCirlceIndicies.Count; i++)
+        {
+            var ele = defenseCirlceIndicies[i];
+            result = ele;
+            defenseDictionary.Add(ele, SpawnCharacter(defenseCharacterPrefab, ele));
+        }
+        return result;
+    }
+
+    private void FillAttackCharacters()
+    {
+        var firstIndex = attackCircleIndicies[0];
+        var lastIndex = attackCircleIndicies[attackCircleIndicies.Count - 1];
+
+        var list = attackDictionary[firstIndex];
+        for (int i = 0; i < list.Count; i++)
+        {
+            var ele = list[i];
+            ele.RemoveYourSelf();
+        }
+
+        attackDictionary.Remove(firstIndex);
+        attackCircleIndicies.Clear();
+        attackCircleIndicies.Add(lastIndex + 1);
+        attackCircleIndicies.Add(lastIndex + 2);
+
+        for (int i = 0; i < attackCircleIndicies.Count; i++)
+        {
+            var ele = attackCircleIndicies[i];
+            attackDictionary.Add(ele, SpawnCharacter(attackCharacterPrefab, ele));
         }
     }
 
     private void RunDefenseTurn()
     {
-        var total = 0;
-        for (int i = 0; i < defenseList.Count; i++)
+        foreach (var list in defenseDictionary.Values)
         {
-            var ele = defenseList[i];
-            ele.BehaveOnUserInput(result =>
+            var total = 0;
+            for (int i = 0; i < list.Count; i++)
             {
-                total += result;
-                if (total >= defenseList.Count)
+                var ele = list[i];
+                ele.BehaveOnUserInput(result =>
                 {
-                    this.Log("switch def -> attack");
-                    this.SetCallback(1, () => turn = GAME_TURN.ATTACK)
-                    ;
-                }
-            });
+                    total += result;
+                    if (total >= list.Count)
+                    {
+                        this.Log("switch def -> attack");
+                        this.SetCallback(1, () => turn = GAME_TURN.ATTACK);
+                    }
+                });
+            }
         }
     }
 
     private void RunAttackTurn()
     {
         var total = 0;
-        for (int i = 0; i < attackList.Count; i++)
+        foreach (var list in attackDictionary.Values)
         {
-            var ele = attackList[i];
-            ele.BehaveOnUserInput(result =>
+            for (int i = 0; i < list.Count; i++)
             {
-                total += result;
-                if (total >= attackList.Count)
+                var ele = list[i];
+                ele.BehaveOnUserInput(result =>
                 {
-                    this.Log("switch attack -> defense");
-                    this.SetCallback(1, () => turn = GAME_TURN.DEFENSE)
-                   ;
-                }
-            });
+                    total += result;
+                    if (total >= list.Count)
+                    {
+                        this.Log("switch attack -> defense");
+                        this.SetCallback(1, () => turn = GAME_TURN.DEFENSE)
+                       ;
+                    }
+                });
+            }
         }
     }
 
@@ -204,17 +272,19 @@ public class GameController : CustomSingleton<GameController>
     {
         var result = new List<Character>();
 
-        List<CellController> cells = GridController.instance.GetPointByCircleIndex(circleIndex);
+        List<CellController> cells = GridController.instance.GetPointsByCircleIndex(circleIndex);
         if (cells != null && cells.Count > 0)
         {
-
             for (int i = 0; i < cells.Count; i++)
             {
                 var ele = cells[i];
+
                 var character = Instantiate(prefab, charactersContainer);
                 character.transform.position = ele.transform.position;
                 character.gridPosition = ele.gridPosition;
                 character.name += "[" + ele.gridPosition.x + "." + ele.gridPosition.y + "]";
+                character.circleIndex = circleIndex;
+
                 ele.character = character;
                 result.Add(character);
             }
@@ -227,17 +297,27 @@ public class GameController : CustomSingleton<GameController>
         return result;
     }
 
-    public void RemoveCharacter(Character character, CharacterModel.CHARACTER_TYPE type)
+    public void RemoveCharacter(Character character, CharacterModel.CHARACTER_TYPE type, int circleIndex)
     {
         if (type == CharacterModel.CHARACTER_TYPE.DEFENSE)
         {
-            defenseList.Remove(character);
+            var list = defenseDictionary[circleIndex];
+            list.Remove(character);
+            if (list.Count == 0)
+            {
+                defenseDictionary.Remove(circleIndex);
+            }
         }
         if (type == CharacterModel.CHARACTER_TYPE.ATTACK)
         {
-            attackList.Remove(character);
+            var list = attackDictionary[circleIndex];
+            list.Remove(character);
+            if (list.Count == 0)
+            {
+                attackDictionary.Remove(circleIndex);
+            }
         }
-        if (attackList.Count == 0 || defenseList.Count == 0)
+        if (attackDictionary.Count == 0 || defenseDictionary.Count == 0)
         {
             EndGame(type);
         }
