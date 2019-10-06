@@ -45,7 +45,7 @@ public class PowerBar : CustomSingleton<PowerBar>
                 totalAttackHP -= startHP;
                 break;
             case CharacterModel.CHARACTER_TYPE.DEFENSE:
-                totalDefenseHP -= startHP;
+                totalAttackHP += startHP;
                 break;
         }
         SetPowerBar();

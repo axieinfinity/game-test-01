@@ -50,7 +50,6 @@ public class Character : MonoBehaviour, IHitable
             if (canClick && GameController.instance.state == GameController.GAME_STATE.PLAY && state == CHARACTER_STATE.ACTIVE)
             {
                 canClick = false;
-                // BehaveOnUserInput();
             }
         }
     }
