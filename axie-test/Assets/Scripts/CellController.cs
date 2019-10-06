@@ -42,8 +42,8 @@ public class CellController : MonoBehaviour
         // circleIndex = (new Vector2Int(i, j).magnitude);
     }
 
-    public void HighLight()
-    {
-        sprite.DOColor(Color.red, 0.5f).SetLoops(2, LoopType.Yoyo);
-    }
+    // public void HighLight()
+    // {
+    //     sprite.DOColor(Color.red, 0.5f).SetLoops(2, LoopType.Yoyo);
+    // }
 }

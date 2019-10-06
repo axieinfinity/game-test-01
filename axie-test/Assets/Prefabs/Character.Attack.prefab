@@ -275,7 +275,7 @@ MonoBehaviour:
   gridPosition: {x: 0, y: 0}
   hpBar: {fileID: 6575552539314388875}
   idle: action/idle
-  move: action/move-forward
+  move: action/appear
   attack: attack/melee/horn-slash
   onclick: action/prepare
   behit: defense/hit-by-horn-attack-crit

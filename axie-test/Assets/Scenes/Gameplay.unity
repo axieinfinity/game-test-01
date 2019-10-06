@@ -1976,7 +1976,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1928525783}
   - component: {fileID: 1928525782}
-  - component: {fileID: 1928525784}
   - component: {fileID: 1928525785}
   m_Layer: 0
   m_Name: GameController
@@ -1998,7 +1997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  turn: 0
+  turn: 1
   charactersContainer: {fileID: 1235229951}
   defenseCharacterPrefab: {fileID: 3769413030350046887, guid: cd06a6ea8359c9042a5b6634726e66a6,
     type: 3}
@@ -2018,23 +2017,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1928525784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928525781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa9ab909e63bb4f4a98a37a470634e28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  t: 0
-  v: 6
-  color: 
-  times: 
-  back: 
 --- !u!114 &1928525785
 MonoBehaviour:
   m_ObjectHideFlags: 0

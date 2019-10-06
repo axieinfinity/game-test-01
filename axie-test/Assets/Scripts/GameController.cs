@@ -12,14 +12,16 @@ public class GameController : CustomSingleton<GameController>
 
     public enum GAME_TURN
     {
-        ATTACK, DEFENSE
+        NONE, ATTACK, DEFENSE
     }
     public GAME_STATE state;
     public GAME_TURN turn;
-    [SerializeField] Transform charactersContainer;
 
+    [SerializeField] Transform charactersContainer;
     [SerializeField] Character defenseCharacterPrefab, attackCharacterPrefab;
     List<Character> defenseList, attackList;
+    float lastUpdate = 0f;
+    const float updateTick = 2f;
     const float speedUpGamePerClick = 2f;
     const float maxSpeedUpGame = 6f;
 
@@ -30,6 +32,24 @@ public class GameController : CustomSingleton<GameController>
 
         this.RegisterListener(EventID.ON_GRID_HAS_INIT, param => OnGridHasInit());
         base.Awake();
+    }
+
+    public Character FindClosestEnemy(Vector3 position)
+    {
+        Character result = null;
+        var min = float.MaxValue;
+
+        for (int i = 0; i < defenseList.Count; i++)
+        {
+            var ele = defenseList[i];
+            var distance = Vector2.Distance(position, ele.transform.position);
+            if (distance < min)
+            {
+                min = distance;
+                result = ele;
+            }
+        }
+        return result;
     }
 
     public void PauseGame()
@@ -112,6 +132,61 @@ public class GameController : CustomSingleton<GameController>
 
     private void Start()
     {
+    }
+
+    private void Update()
+    {
+        if (state == GameController.GAME_STATE.PLAY)
+        {
+            if (turn == GAME_TURN.ATTACK)
+            {
+                turn = GAME_TURN.NONE;
+                RunAttackTurn();
+            }
+            if (turn == GAME_TURN.DEFENSE)
+            {
+                turn = GAME_TURN.NONE;
+                RunDefenseTurn();
+            }
+        }
+    }
+
+    private void RunDefenseTurn()
+    {
+        var total = 0;
+        for (int i = 0; i < defenseList.Count; i++)
+        {
+            var ele = defenseList[i];
+            ele.BehaveOnUserInput(result =>
+            {
+                total += result;
+                if (total >= defenseList.Count)
+                {
+                    this.Log("switch def -> attack");
+                    this.SetCallback(1, () => turn = GAME_TURN.ATTACK)
+                    ;
+                }
+            });
+        }
+    }
+
+    private void RunAttackTurn()
+    {
+        var total = 0;
+        for (int i = 0; i < attackList.Count; i++)
+        {
+            var ele = attackList[i];
+            ele.BehaveOnUserInput(result =>
+            {
+                total += result;
+                if (total >= attackList.Count)
+                {
+                    this.Log("switch attack -> defense");
+                    this.SetCallback(1, () => turn = GAME_TURN.DEFENSE)
+                   ;
+                }
+            });
+        }
     }
 
     List<Character> SpawnCharacter(Character prefab, int circleIndex)

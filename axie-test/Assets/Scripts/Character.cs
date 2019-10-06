@@ -46,25 +46,33 @@ public class Character : MonoBehaviour, IHitable
             if (canClick && GameController.instance.state == GameController.GAME_STATE.PLAY && state == CHARACTER_STATE.ACTIVE)
             {
                 canClick = false;
-                BehaveOnUserInput();
+                // BehaveOnUserInput();
             }
         }
     }
 
-    public virtual void BehaveOnUserInput()
+    public virtual void BehaveOnUserInput(System.Action<int> callback)
     {
         this.Log("virtual fucntion");
     }
 
-    public virtual void Attack(Character enemy)
+    public virtual void Attack(Character enemy, System.Action<int> callback)
     {
         SetAnimAttack();
 
         this.SetCallback(0.5f, () =>
         {
-            Camera.main.DOShakePosition(0.25f, 0.5f, 10);
+            // if (DOTween.IsTweening(Camera.main) == false)
+            // {
+            //     Camera.main.DOShakePosition(0.25f, 0.5f, 10).OnComplete(() => callback(1));
+            // }
+            // else
+            // {
+            //     DOTween.Restart(Camera.main);
+            // }
             var randomPoint = Random.Range(0, 2);
             enemy.GetComponent<IHitable>().GetHit(randomPoint);
+            callback(1);
         });
     }
 
@@ -87,7 +95,7 @@ public class Character : MonoBehaviour, IHitable
 
     public void SetAnimMove()
     {
-        skeletonAnimation.AnimationState.SetAnimation(0, move, true);
+        skeletonAnimation.AnimationState.SetAnimation(0, move, false);
     }
 
     public void SetAnimOnClick()

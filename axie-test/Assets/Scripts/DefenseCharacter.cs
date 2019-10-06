@@ -3,26 +3,24 @@ using System;
 
 public class DefenseCharacter : Character
 {
-    public override void BehaveOnUserInput()
+    public override void BehaveOnUserInput(System.Action<int> completeBehaviorCallback)
     {
+        if (state != CHARACTER_STATE.ACTIVE)
+        {
+            throw new Exception("character state inactive");
+            // return;
+        }
+
         var enemy = GridController.instance.GetAdjacentEnemy(gridPosition, CharacterModel.CHARACTER_TYPE.ATTACK);
         if (enemy != null)
         {
-            Attack(enemy);
+            Attack(enemy, completeBehaviorCallback);
         }
         else
         {
-            SetAnimOnClick();
+            // SetAnimOnClick();
+            completeBehaviorCallback(1);
         }
         // SetAnimOnClick();
     }
-
-    // private void Attack(Character enemy)
-    // {
-    //     this.Log("attacking");
-    //     SetAnimAttack();
-    //     var randomPoint = Random.Range(0, 2);
-    //     enemy.GetComponent<IHitable>().GetHit(randomPoint);
-    //     canClick = true;
-    // }
 }

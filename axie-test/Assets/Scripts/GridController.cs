@@ -46,6 +46,7 @@ public class GridController : CustomSingleton<GridController>
         return result;
     }
 
+
     public void RemoveCharacterFromCell(Vector2 gridPosition)
     {
         cellsDictionary[gridPosition].character = null;
@@ -119,6 +120,34 @@ public class GridController : CustomSingleton<GridController>
             }
         }
         return null;
+    }
+
+    public CellController GetAdjacentPosition(Vector2 gridPosition, Vector3 worldPosition)
+    {
+        var adjacentCells = GetAdjacentCells(gridPosition);
+        var nonEnemyCellsList = new List<CellController>();
+        for (int i = 0; i < adjacentCells.Count; i++)
+        {
+            var ele = adjacentCells[i];
+            if (ele.character == null)
+            {
+                nonEnemyCellsList.Add(ele);
+            }
+        }
+
+        var min = float.MaxValue;
+        CellController result = null;
+        for (int i = 0; i < nonEnemyCellsList.Count; i++)
+        {
+            var ele = nonEnemyCellsList[i];
+            var distance = Vector2.Distance(worldPosition, ele.transform.position);
+            if (distance < min)
+            {
+                min = distance;
+                result = ele;
+            }
+        }
+        return result;
     }
 
     public List<CellController> GetAdjacentCells(Vector2 gPos)

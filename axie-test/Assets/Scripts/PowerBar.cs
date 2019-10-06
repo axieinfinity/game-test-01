@@ -22,14 +22,14 @@ public class PowerBar : CustomSingleton<PowerBar>
     {
         this.totalDefenseHP = totalDefenseHP;
         this.totalAttackHP = totalAttackHP;
-
+        totalHP = totalDefenseHP + totalAttackHP;
         SetPowerBar();
     }
 
     private void SetPowerBar()
     {
-        totalHP = totalDefenseHP + totalAttackHP;
-        attackBar.DOFillAmount(totalAttackHP / totalHP, 1f).SetEase(Ease.OutQuad);
+        // totalHP = totalDefenseHP + totalAttackHP;
+        attackBar.fillAmount = totalAttackHP / totalHP;
     }
 
     void Start()
