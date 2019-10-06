@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &232550448964790649
 RectTransform:
   m_ObjectHideFlags: 0
@@ -273,13 +273,14 @@ MonoBehaviour:
   state: 0
   model: {fileID: 11400000, guid: ddf4a51350537164399a8b2d14a34595, type: 2}
   gridPosition: {x: 0, y: 0}
-  hpBar: {fileID: 6575552539314388875}
   idle: action/idle
   move: action/appear
   attack: attack/melee/horn-slash
   onclick: action/prepare
   behit: defense/hit-by-horn-attack-crit
   skeletonAnimation: {fileID: 1969836847225174184}
+  hpBarPrefab: {fileID: 331516042605893048, guid: 79de1689d1d06fd40865b2f884421793,
+    type: 3}
 --- !u!1 &2389213491979337158
 GameObject:
   m_ObjectHideFlags: 0

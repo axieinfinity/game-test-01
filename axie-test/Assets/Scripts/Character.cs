@@ -9,24 +9,28 @@ public class Character : MonoBehaviour, IHitable
     {
         ACTIVE, INACTIVE,
     }
-
-
     public CHARACTER_STATE state;
     public static bool canClick = true;
     public CharacterModel model;
     public Vector2 gridPosition;
 
-    [SerializeField] CharacterHPBar hpBar;
+    CharacterHPBar hpBar;
     [SerializeField, SpineAnimation] string idle, move, attack, onclick, behit;
     [SerializeField] SkeletonAnimation skeletonAnimation;
+    [SerializeField] CharacterHPBar hpBarPrefab;
     float currentHP;
     float touchTime;
     float delay = 0.2f;
 
-
     private void Start()
     {
         currentHP = model.startHP;
+        hpBar = Instantiate(hpBarPrefab, UIController.instance.hpBarsContainer);
+    }
+
+    private void Update()
+    {
+        hpBar.transform.position = transform.position + Vector3.up / 2;
     }
 
     private void OnMouseDown()

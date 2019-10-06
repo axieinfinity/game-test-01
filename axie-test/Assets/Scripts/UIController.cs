@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class UIController : CustomSingleton<UIController>
 {
+    public Transform hpBarsContainer;
+
     [SerializeField] GameObject btnPause, btnPlay;
     [SerializeField] Transform endGamePanel;
     [SerializeField] Text endGameText;

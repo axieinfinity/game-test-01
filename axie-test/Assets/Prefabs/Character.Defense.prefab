@@ -248,13 +248,14 @@ MonoBehaviour:
   state: 0
   model: {fileID: 11400000, guid: 7a6b8012e3b16e6459417b46b53cdbc6, type: 2}
   gridPosition: {x: 0, y: 0}
-  hpBar: {fileID: 4919908502936697045}
   idle: action/idle
   move: action/move-forward
   attack: attack/melee/horn-gore
   onclick: action/prepare
   behit: defense/hit-by-normal-attack
   skeletonAnimation: {fileID: 1969836847225174184}
+  hpBarPrefab: {fileID: 331516042605893048, guid: 5fdd1a9ae4700b44082c92542fd12468,
+    type: 3}
 --- !u!1 &2225931764912704177
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,7 +365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3149202769790592006
 RectTransform:
   m_ObjectHideFlags: 0
