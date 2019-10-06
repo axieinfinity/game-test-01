@@ -77,6 +77,7 @@
      <Compile Include="Assets\Scripts\Miscellaneous\CircleLayoutGroup.cs" />
      <Compile Include="Assets\Scripts\Miscellaneous\CustomSingleton.cs" />
      <Compile Include="Assets\Scripts\Miscellaneous\ExtensionMethods.cs" />
+     <Compile Include="Assets\Scripts\Miscellaneous\GameSettings.cs" />
      <Compile Include="Assets\Scripts\Miscellaneous\Observer_EventData.cs" />
      <Compile Include="Assets\Scripts\Miscellaneous\Observer_EventDispatcher.cs" />
      <Compile Include="Assets\Scripts\Miscellaneous\Observer_EventID.cs" />

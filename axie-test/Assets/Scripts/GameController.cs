@@ -16,6 +16,7 @@ public class GameController : CustomSingleton<GameController>
     }
     public GAME_STATE state;
     public GAME_TURN turn;
+    public GameSettings gameSettings;
 
     [SerializeField] Transform charactersContainer;
     [SerializeField] Character defenseCharacterPrefab, attackCharacterPrefab;
@@ -136,17 +137,27 @@ public class GameController : CustomSingleton<GameController>
 
     private void Update()
     {
-        if (state == GameController.GAME_STATE.PLAY)
+        if (gameSettings.gameMode == GameSettings.GAME_MODE.SIMULATOR_GAME_PLAY)
         {
-            if (turn == GAME_TURN.ATTACK)
+            if (state == GameController.GAME_STATE.PLAY)
             {
-                turn = GAME_TURN.NONE;
-                RunAttackTurn();
+                if (turn == GAME_TURN.ATTACK)
+                {
+                    turn = GAME_TURN.NONE;
+                    RunAttackTurn();
+                }
+                if (turn == GAME_TURN.DEFENSE)
+                {
+                    turn = GAME_TURN.NONE;
+                    RunDefenseTurn();
+                }
             }
-            if (turn == GAME_TURN.DEFENSE)
+        }
+        if (gameSettings.gameMode == GameSettings.GAME_MODE.TEST_CREATE_MAP)
+        {
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                turn = GAME_TURN.NONE;
-                RunDefenseTurn();
+                
             }
         }
     }
