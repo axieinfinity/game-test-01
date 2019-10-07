@@ -21,6 +21,7 @@ ScriptsOnlyBuild:
     - DG.Tweening.Core.DOTweenSettings
     Unity.Timeline.Editor.dll:
     - UnityEditor.Timeline.SequenceHierarchy
+    - UnityEditor.Timeline.TimelineAssetViewModel
     - UnityEditor.Timeline.TimelineWindow
     Unity.Timeline.dll:
     - UnityEngine.Timeline.AnimationTrack

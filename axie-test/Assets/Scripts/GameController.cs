@@ -23,6 +23,8 @@ public class GameController : CustomSingleton<GameController>
     List<int> defenseCirlceIndicies, attackCircleIndicies;
     List<Character> defenseList, attackList;
     Dictionary<int, List<Character>> defenseDictionary, attackDictionary;
+    bool lockCreateMap;
+    float lastTimeCreateMap;
     const float speedUpGamePerClick = 2f;
     const float maxSpeedUpGame = 6f;
 
@@ -178,12 +180,34 @@ public class GameController : CustomSingleton<GameController>
         }
         if (gameSettings.gameMode == GameSettings.GAME_MODE.TEST_CREATE_MAP)
         {
-            if (Input.GetKeyDown(KeyCode.C) && FPSDisplay.instance.GetFps() >= 30f)
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                GridController.instance.UpdateSize(gameSettings.gridSizeIncrease);
-                GridController.instance.SetCircleIndex();
-                FillDefenseCharacters();
-                FillAttackCharacters();
+                if (lockCreateMap == false)
+                {
+                    GridController.instance.UpdateSize(gameSettings.gridSizeIncrease);
+                    GridController.instance.SetCircleIndex();
+                    FillDefenseCharacters();
+                    FillAttackCharacters();
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                if (lockCreateMap == false)
+                {
+                    lockCreateMap = true;
+                }
+            }
+
+            if (lockCreateMap == true && Time.time - lastTimeCreateMap > 2f)
+            {
+                lastTimeCreateMap = Time.time;
+                if (FPSDisplay.instance.GetFps() >= 30f)
+                {
+                    GridController.instance.UpdateSize(gameSettings.gridSizeIncrease);
+                    GridController.instance.SetCircleIndex();
+                    FillDefenseCharacters();
+                    FillAttackCharacters();
+                }
             }
         }
     }
@@ -215,14 +239,17 @@ public class GameController : CustomSingleton<GameController>
         }
 
         attackDictionary.Remove(firstIndex);
-        attackCircleIndicies.Clear();
+        attackCircleIndicies.RemoveAt(0);
         attackCircleIndicies.Add(lastIndex + 1);
         attackCircleIndicies.Add(lastIndex + 2);
 
-        for (int i = 0; i < attackCircleIndicies.Count; i++)
+        for (int i = attackCircleIndicies.Count - 1; i >= 0; i--)
         {
             var ele = attackCircleIndicies[i];
-            attackDictionary.Add(ele, SpawnCharacter(attackCharacterPrefab, ele));
+            if (attackDictionary.ContainsKey(ele) == false)
+            {
+                attackDictionary.Add(ele, SpawnCharacter(attackCharacterPrefab, ele));
+            }
         }
     }
 
