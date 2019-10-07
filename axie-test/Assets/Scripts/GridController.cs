@@ -26,25 +26,52 @@ public class GridController : CustomSingleton<GridController>
     void Start()
     {
         CreateGrid();
-        // SetCircleIndex();
+        SetCircleIndex();
+        this.PostEvent(EventID.ON_GRID_HAS_INIT);
     }
 
-    private void SetCircleIndex()
+    public void SetCircleIndex()
     {
-        var j = 0;
-        var k = 0;
-
-        while (j < height)
+        var maxCircleIndex = width - 1;
+        cellsDictionary[Vector2.zero].SetCircleIndex(1);
+        while (maxCircleIndex > 0)
         {
-            for (float i = -width + 1; i < width; i += 0.5f)
+            var j = -1;
+            var k = 1;
+            var l = 1;
+            for (float i = -maxCircleIndex; i <= maxCircleIndex; i += 0.5f * k)
             {
-                for (int p = 0; p < 2; p++)
+                var pos = default(Vector2);
+                var pos1 = default(Vector2);
+
+                if ((-maxCircleIndex) / 2 <= i && i <= (maxCircleIndex) / 2f && Mathf.Abs(j) == maxCircleIndex)
                 {
-                    var mul = p == 0 ? 1 : -1;
-                    var pos = new Vector2(i, j);
-                    var cell = cellsDictionary[pos];
+                    pos = new Vector2(i, j);
+                    pos1 = new Vector2(i, -j);
+                    if (i == (maxCircleIndex) / 2f)
+                    {
+                        k--;
+                        l = -l;
+                    }
                 }
+                else
+                {
+                    j += l;
+                    pos = new Vector2(i, j);
+                    pos1 = new Vector2(i, -j);
+                    if (Mathf.Abs(j) == maxCircleIndex)
+                    {
+                        k++;
+                    }
+                }
+                // cellsDictionary[pos].gameObject.name = "check." + maxCircleIndex;
+                // cellsDictionary[pos1].gameObject.name = "check." + maxCircleIndex;
+
+                cellsDictionary[pos].SetCircleIndex(maxCircleIndex);
+                cellsDictionary[pos1].SetCircleIndex(maxCircleIndex);
+
             }
+            maxCircleIndex--;
         }
     }
 
@@ -107,7 +134,7 @@ public class GridController : CustomSingleton<GridController>
             k++;
             j++;
         }
-        this.PostEvent(EventID.ON_GRID_HAS_INIT);
+        // this.PostEvent(EventID.ON_GRID_HAS_INIT);
     }
 
     public Character GetAdjacentEnemy(Vector2 gPos, CHARACTER_TYPE type)

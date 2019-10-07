@@ -34,25 +34,30 @@ public class CellController : MonoBehaviour
         // }
         // circleIndex = (int)mag;
         gridPosition = new Vector2(i, j);
-        i = Mathf.Abs(i);
-        j = Mathf.Abs(j);
-        if (i >= j)
-        {
-            circleIndex = Mathf.CeilToInt(i + j / 2);
-        }
-        else
-        {
-            circleIndex = Mathf.RoundToInt(j + (i - 0.5f) / 2);
-        }
-        if (circleIndex >= GridController.instance.width || circleIndex >= GridController.instance.height)
-        {
-            circleIndex = GridController.instance.width - 1;
-        }
-        if (i == 0 && j == 0)
-        {
-            circleIndex = 1;
-        }
+        // i = Mathf.Abs(i);
+        // j = Mathf.Abs(j);
+        // if (i >= j)
+        // {
+        //     circleIndex = Mathf.CeilToInt(i + j / 2);
+        // }
+        // else
+        // {
+        //     circleIndex = Mathf.RoundToInt(j + (i - 0.5f) / 2);
+        // }
+        // if (circleIndex >= GridController.instance.width || circleIndex >= GridController.instance.height)
+        // {
+        //     circleIndex = GridController.instance.width - 1;
+        // }
+        // if (i == 0 && j == 0)
+        // {
+        //     circleIndex = 1;
+        // }
 
+    }
+
+    public void SetCircleIndex(int value)
+    {
+        circleIndex = value;
     }
 
     // public void HighLight()

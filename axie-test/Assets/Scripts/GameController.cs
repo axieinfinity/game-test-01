@@ -181,6 +181,7 @@ public class GameController : CustomSingleton<GameController>
             if (Input.GetKeyDown(KeyCode.C) && FPSDisplay.instance.GetFps() >= 30f)
             {
                 GridController.instance.UpdateSize(gameSettings.gridSizeIncrease);
+                GridController.instance.SetCircleIndex();
                 FillDefenseCharacters();
                 FillAttackCharacters();
             }
