@@ -24,17 +24,35 @@ public class CellController : MonoBehaviour
 
     public void InitValues(float i, float j)
     {
-        var io = i;
-        var mag = Mathf.Sqrt(io * io + j * j);
+        // var io = i;
+        // var mag = Mathf.Sqrt(io * io + j * j);
 
-        mag = Mathf.RoundToInt(mag);
-        if (mag < 1)
-        {
-            mag = 1;
-        }
-        circleIndex = (int)mag;
-
+        // mag = Mathf.RoundToInt(mag);
+        // if (mag < 1)
+        // {
+        //     mag = 1;
+        // }
+        // circleIndex = (int)mag;
         gridPosition = new Vector2(i, j);
+        i = Mathf.Abs(i);
+        j = Mathf.Abs(j);
+        if (i >= j)
+        {
+            circleIndex = Mathf.CeilToInt(i + j / 2);
+        }
+        else
+        {
+            circleIndex = Mathf.RoundToInt(j + (i - 0.5f) / 2);
+        }
+        if (circleIndex >= GridController.instance.width || circleIndex >= GridController.instance.height)
+        {
+            circleIndex = GridController.instance.width - 1;
+        }
+        if (i == 0 && j == 0)
+        {
+            circleIndex = 1;
+        }
+
     }
 
     // public void HighLight()

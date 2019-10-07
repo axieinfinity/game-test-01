@@ -26,6 +26,26 @@ public class GridController : CustomSingleton<GridController>
     void Start()
     {
         CreateGrid();
+        // SetCircleIndex();
+    }
+
+    private void SetCircleIndex()
+    {
+        var j = 0;
+        var k = 0;
+
+        while (j < height)
+        {
+            for (float i = -width + 1; i < width; i += 0.5f)
+            {
+                for (int p = 0; p < 2; p++)
+                {
+                    var mul = p == 0 ? 1 : -1;
+                    var pos = new Vector2(i, j);
+                    var cell = cellsDictionary[pos];
+                }
+            }
+        }
     }
 
     public List<CellController> GetPointsByCircleIndex(int circleIndex)
@@ -56,9 +76,9 @@ public class GridController : CustomSingleton<GridController>
         var j = 0;
         var k = 0;
         var offset = 0f;
-        while (j <= height)
+        while (j < height)
         {
-            for (int i = -width + k; i <= width; i++)
+            for (int i = -width + k + 1; i < width; i++)
             {
                 offset = k * -0.5f;
                 var obj = default(CellController);
@@ -149,21 +169,23 @@ public class GridController : CustomSingleton<GridController>
 
     public void UpdateSize(int value)
     {
-
         var newWidth = width + value;
         var newHeight = height + value;
+
+        width = newWidth;
+        height = newHeight;
 
         var j = 0;
         var k = 0;
         var offset = 0f;
-        while (j <= newHeight)
+        while (j < newHeight)
         {
-            for (int i = -newWidth + k; i <= newWidth; i++)
+            for (int i = -newWidth + k + 1; i < newWidth; i++)
             {
                 offset = k * -0.5f;
 
                 //if index is contained by existed cell then ingore
-                if ((-width + k <= i && i <= width) && (-height <= j && j <= height))
+                if ((-(newWidth - value) + k + 1 <= i && i < newWidth - value) && (-newHeight - value < j && j < newHeight - value))
                 {
                     continue;
                 }
@@ -195,8 +217,7 @@ public class GridController : CustomSingleton<GridController>
             j++;
         }
 
-        width = newWidth;
-        height = newHeight;
+
     }
 
     public List<CellController> GetAdjacentCells(Vector2 gPos)

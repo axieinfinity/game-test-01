@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DragAndZoom : MonoBehaviour
 {
-    [SerializeField] Transform miniMapCamera;
+    [SerializeField] Camera miniMapCamera;
     [SerializeField] Transform background;
     Vector3 startPosition;
     Camera mainCamera;
@@ -40,7 +40,7 @@ public class DragAndZoom : MonoBehaviour
                 var currentPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
                 var direction = startPosition - currentPosition;
                 mainCamera.transform.position += direction;
-                miniMapCamera.position += direction;
+                miniMapCamera.transform.position += direction;
 
                 CheckOutOfLimit();
             }
@@ -69,6 +69,7 @@ public class DragAndZoom : MonoBehaviour
             else if (Input.mouseScrollDelta.y < 0)
             {
                 mainCamera.orthographicSize += 0.2f;
+                miniMapCamera.orthographicSize += 0.2f;
                 var diff = mainCamera.orthographicSize / startCameraSize;
                 background.transform.localScale = startBGScale * diff;
             }
