@@ -21,7 +21,6 @@ ScriptsOnlyBuild:
     - DG.Tweening.Core.DOTweenSettings
     Unity.Timeline.Editor.dll:
     - UnityEditor.Timeline.SequenceHierarchy
-    - UnityEditor.Timeline.TimelineAssetViewModel
     - UnityEditor.Timeline.TimelineWindow
     Unity.Timeline.dll:
     - UnityEngine.Timeline.AnimationTrack
@@ -1073,4 +1072,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/Gameplay.unity
-  playerPath: E:/Projects/game-test-01/axie-test/Build/axie-test.exe
+  playerPath: C:/Users/akduy/OneDrive/Desktop/game-test-01/axie-test/Build/axie-test.exe
