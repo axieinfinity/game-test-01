@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : CustomSingleton<GameController>
 {
@@ -48,15 +49,18 @@ public class GameController : CustomSingleton<GameController>
     {
         Character result = null;
         var min = float.MaxValue;
-        var list = defenseDictionary[circleIndex];
-        for (int i = 0; i < list.Count; i++)
+        foreach (var item in defenseCirlceIndicies)
         {
-            var ele = list[i];
-            var distance = Vector2.Distance(position, ele.transform.position);
-            if (distance < min)
+            var list = defenseDictionary[item];
+            for (int i = 0; i < list.Count; i++)
             {
-                min = distance;
-                result = ele;
+                var ele = list[i];
+                var distance = Vector2.Distance(position, ele.transform.position);
+                if (distance < min)
+                {
+                    min = distance;
+                    result = ele;
+                }
             }
         }
         return result;
@@ -195,6 +199,19 @@ public class GameController : CustomSingleton<GameController>
                 if (lockCreateMap == false)
                 {
                     lockCreateMap = true;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                if (gameSettings.gameMode == GameSettings.GAME_MODE.SIMULATOR_GAME_PLAY)
+                {
+                    gameSettings.gameMode = GameSettings.GAME_MODE.TEST_CREATE_MAP;
+                    SceneManager.LoadScene("Gameplay");
+                }
+                if (gameSettings.gameMode == GameSettings.GAME_MODE.TEST_CREATE_MAP)
+                {
+                    gameSettings.gameMode = GameSettings.GAME_MODE.SIMULATOR_GAME_PLAY;
+                    SceneManager.LoadScene("Gameplay");
                 }
             }
 
