@@ -9,56 +9,56 @@ public class Attacker : Character
 {
     CircleUnit moveToTarget;
     float speed;
-    public override void CheckAction()
+    public override bool CheckAction()
     {
         base.CheckAction();
+        if (ClosestEnemy == null)
+            return true;
         SwitchBase();
         var adjacents = StandingBase.Adjacents;
-        moveToTarget = null;
-        float minDistance = 1000;
+        if(adjacents.Contains(ClosestEnemy.StandingBase))
+        {
+            Action.SetAction(EnCharacterAction.Attack, ClosestEnemy);
+            return true;
+        }
+        float minDistance = Vector2.Distance(StandingBase.Data.BasePosition, ClosestEnemy.StandingBase.Data.BasePosition);
+        CircleUnit target = null;
         foreach(var a in adjacents)
         {
             if (a.BookedCharacter != null)
                 continue;
             if(a.Character != null && a.Character.Data.Type == EnCharacterType.Defensor)
             {
-                Attack(a.Character);
-                return;
+                Action.SetAction(EnCharacterAction.Attack, a.Character);
+                return true;
             }
             if (CanMoveTo(a, ref minDistance))
-                moveToTarget = a;
+                target = a;
         }
-        if (moveToTarget != null)
+        if (target != null)
         {
-            moveToTarget.CharacterBook(this);
-            MoveTo(moveToTarget);
+            target.CharacterBook(this);
+            Action.SetAction(EnCharacterAction.Move, target);
+            return true;
         }
-        speed = GameConfig.CircleUnitRadius * 2f / (0.9f*GameConfig.CharacterActionDuration);
+        return false;
     }
 
     bool CanMoveTo(CircleUnit unit, ref float minDistance)
     {
-        if (unit.Character != null || unit.Data.Round >= StandingBase.Data.Round)
+        if (unit.Character != null /*|| unit.Data.Round >= StandingBase.Data.Round*/)
             return false;
-        var adjacents = unit.Adjacents;
-        bool canMove = false;
-        foreach(var a in adjacents)
+        var distance = Vector2.Distance(unit.Data.BasePosition, ClosestEnemy.StandingBase.Data.BasePosition);
+        if (distance < minDistance)
         {
-            if(a.Data.Round < StandingBase.Data.Round)
-            {
-                var distance = Vector2.Distance(a.Data.BasePosition, StandingBase.Data.BasePosition);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    canMove = true;
-                }
-            }
+            minDistance = distance;
+            return true;
         }
-        return canMove;
+        return false;
     }
     private void Update()
     {
-        if(moveToTarget != null)
+        if (moveToTarget != null)
         {
             float step = speed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, moveToTarget.transform.position + new Vector3(0, -0.7f, 0), step);
@@ -77,5 +77,12 @@ public class Attacker : Character
         moveToTarget.UpdateCharacter(this);
         UpdateStandingBase(moveToTarget);
         moveToTarget = null;
+    }
+
+    public override void MoveTo(CircleUnit unit)
+    {
+        base.MoveTo(unit);
+        speed = GameConfig.CircleUnitRadius * 2f / (0.9f * GameConfig.CharacterActionDuration);
+        moveToTarget = unit;
     }
 }

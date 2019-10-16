@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Defensor : Character
 {
-    public override void CheckAction()
+    public override bool CheckAction()
     {
         base.CheckAction();
         var adjacents = StandingBase.Adjacents;
@@ -17,9 +17,10 @@ public class Defensor : Character
                 continue;
             if (a.Character != null && a.Character.Data.Type == EnCharacterType.Attacker)
             {
-                Attack(a.Character);
-                return;
+                Action.SetAction(EnCharacterAction.Attack, a.Character);
+                return true;
             }
         }
+        return false;
     }
 }

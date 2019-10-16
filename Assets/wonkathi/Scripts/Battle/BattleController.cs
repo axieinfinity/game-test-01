@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class BattleController : MonoBehaviour
 {
+    [SerializeField] private Camera battleCamera;
+    [SerializeField] private BattleUI battleUI;
     [SerializeField] private Transform hexagonZone;
     [SerializeField] private CircleUnit prefabCircleUnit;
     [SerializeField] private Character prefabDefensor, prefabAttacker;
     List<CircleUnit> units = new List<CircleUnit>();
-    List<Character> characters = new List<Character>();
+    List<Character> defensors = new List<Character>();
+    List<Character> attackers = new List<Character>();
     private void OnEnable()
     {
         prefabCircleUnit.gameObject.SetActive(false);
@@ -95,36 +98,104 @@ public class BattleController : MonoBehaviour
                 character.gameObject.SetActive(true);
                 character.transform.localPosition = new Vector3(0, -character.Size.y * character.transform.localScale.y, 0);
                 character.SetData(data);
-                characters.Add(character);
+                defensors.Add(character);
                 unit.UpdateCharacter(character);
                 character.UpdateStandingBase(unit);
+                character.OnCharacterDie = OnCharacterDie;
+                battleUI.RegisterHP(character);
             } else if(attackerRounds.Contains(unit.Data.Round)){
                 DTCharacter data = new DTCharacter(GameConfig.AttackerBaseHP, EnCharacterType.Attacker);
                 var character = Instantiate(prefabAttacker, unit.transform);
                 character.gameObject.SetActive(true);
                 character.transform.localPosition = new Vector3(0, -character.Size.y*character.transform.localScale.y, 0);
                 character.SetData(data);
-                characters.Add(character);
+                attackers.Add(character);
                 unit.UpdateCharacter(character);
                 character.UpdateStandingBase(unit);
+                character.OnCharacterDie = OnCharacterDie;
+                battleUI.RegisterHP(character);
             }
         }
     }
 
     void CheckCharacterAction()
     {
-        foreach(var c in characters)
+        // Check and setup Action
+        List<Character> characterHadActions = new List<Character>();
+        foreach(var c in defensors)
         {
-            c.CheckAction();
+            bool isHadAction = c.CheckAction();
+            if (isHadAction)
+                characterHadActions.Add(c);
         }
+
+        foreach (var c in attackers)
+        {
+            Character closestDefensor = FindClosestDefensor(c);
+            c.UpdateClosestEnemy(closestDefensor);
+            bool isHadAction = c.CheckAction();
+            if (isHadAction)
+                characterHadActions.Add(c);
+        }
+
+        foreach (var c in characterHadActions)
+        {
+            c.DoAction();
+        }
+
+        bool endGame = defensors.Count == 0 || attackers.Count == 0;
+        if (endGame && !written)
+        {
+            characterHadActions.Clear();
+            characterHadActions.AddRange(defensors);
+            characterHadActions.AddRange(attackers);
+            string[] logs = new string[characterHadActions.Count];
+            for(int i=0;i< characterHadActions.Count;i++)
+            {
+                var unit = characterHadActions[i];
+                logs[i] = unit.Data.CurrentHP.ToString();
+            }
+            string path = Application.dataPath + "/log_" + System.DateTime.Now.Ticks + ".txt";
+            System.IO.File.WriteAllLines(path, logs);
+            written = true;
+        }
+    }
+
+    bool written;
+    Character FindClosestDefensor(Character character)
+    {
+        Character defensor = null;
+        float minDistance = 1000;
+        foreach(var unit in defensors)
+        {
+            float curDistance = Vector2.Distance(unit.StandingBase.Data.BasePosition, character.StandingBase.Data.BasePosition);
+            if(curDistance < minDistance)
+            {
+                defensor = unit;
+                minDistance = curDistance;
+            }
+        }
+        return defensor;
+    }
+    void OnCharacterDie(Character character)
+    {
+        if (character.Data.Type == EnCharacterType.Defensor)
+            defensors.Remove(character);
+        else attackers.Remove(character);
+        Destroy(character.gameObject);
     }
 
     void ClearCharacters()
     {
-        foreach(var c in characters)
+        foreach(var c in defensors)
         {
             Destroy(c.gameObject);
         }
-        characters.Clear();
+        foreach (var c in attackers)
+        {
+            Destroy(c.gameObject);
+        }
+        defensors.Clear();
+        attackers.Clear();
     }
 }

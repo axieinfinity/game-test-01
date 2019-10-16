@@ -11,5 +11,5 @@ public static class AnimationAction
     public const string Prepair = "action/prepair";
     public const string Stun = "status/stun";
     public const string GotHit = "defense/hit-by-normal-attack";
-    public const string Attack = "attack/melee/tail-roll";
+    public const string Attack = "attack/melee/horn-slash";
 }
