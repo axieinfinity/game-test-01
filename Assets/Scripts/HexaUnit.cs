@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HexaUnit : MonoBehaviour
 {
-    private List<HexaUnit> _neighbours = null;
-    private Vector2 _location = Vector2.zero;
+    private Vector2 _center = Vector2.zero;
+    private List<Vector2> _points;
     // Start is called before the first frame update
     void Start()
     {
