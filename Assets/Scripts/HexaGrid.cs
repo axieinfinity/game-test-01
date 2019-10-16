@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HexaGrid : MonoBehaviour
-{
+{   
+    public static readonly float HEX_GRID_UNIT_SIZE = 1;
     [SerializeField] int gridSize = 1;
     [SerializeField] HexaUnit cyanPrefab = null;
     [SerializeField] HexaUnit greenPrefab = null;
