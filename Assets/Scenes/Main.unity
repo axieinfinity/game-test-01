@@ -616,8 +616,8 @@ GameObject:
   m_Component:
   - component: {fileID: 753715322}
   - component: {fileID: 753715325}
-  - component: {fileID: 753715324}
   - component: {fileID: 753715323}
+  - component: {fileID: 753715324}
   m_Layer: 5
   m_Name: ZoomOut
   m_TagString: Untagged
@@ -662,27 +662,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 753715321}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fdca5042b1d12a4890ec1bd4f04290d, type: 3}
+  m_Script: {fileID: 11500000, guid: a43d767d310584d7a8bce9339a38eae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tweenTarget: {fileID: 753715321}
-  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
-  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  duration: 0.2
-  dragHighlight: 0
-  hoverSprite: 
-  pressedSprite: 
-  disabledSprite: 
-  hoverSprite2D: {fileID: 0}
-  pressedSprite2D: {fileID: 0}
-  disabledSprite2D: {fileID: 0}
-  pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 395427838}
-    mMethodName: ZoomOut
-    mParameters: []
-    oneShot: 0
+  _type: 1
 --- !u!114 &753715325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -751,7 +734,7 @@ GameObject:
   - component: {fileID: 835328002}
   - component: {fileID: 835328001}
   m_Layer: 5
-  m_Name: UI Root
+  m_Name: UI Root Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1023,8 +1006,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1187262325}
   - component: {fileID: 1187262328}
-  - component: {fileID: 1187262327}
   - component: {fileID: 1187262326}
+  - component: {fileID: 1187262327}
   m_Layer: 5
   m_Name: ZoomIn
   m_TagString: Untagged
@@ -1069,27 +1052,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1187262324}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fdca5042b1d12a4890ec1bd4f04290d, type: 3}
+  m_Script: {fileID: 11500000, guid: a43d767d310584d7a8bce9339a38eae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tweenTarget: {fileID: 1187262324}
-  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
-  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  duration: 0.2
-  dragHighlight: 0
-  hoverSprite: 
-  pressedSprite: 
-  disabledSprite: 
-  hoverSprite2D: {fileID: 0}
-  pressedSprite2D: {fileID: 0}
-  disabledSprite2D: {fileID: 0}
-  pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 395427838}
-    mMethodName: ZoomIn
-    mParameters: []
-    oneShot: 0
+  _type: 0
 --- !u!114 &1187262328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,7 +1419,7 @@ GameObject:
   - component: {fileID: 1729999106}
   - component: {fileID: 1729999105}
   m_Layer: 8
-  m_Name: UI Root
+  m_Name: UI Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
