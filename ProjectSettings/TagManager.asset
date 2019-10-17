@@ -14,7 +14,7 @@ TagManager:
   - 
   - 
   - Battle
-  - 
+  - MiniMap
   - 
   - 
   - 
@@ -46,4 +46,7 @@ TagManager:
     locked: 0
   - name: Character
     uniqueID: 2241122981
+    locked: 0
+  - name: HP
+    uniqueID: 349268909
     locked: 0
