@@ -10,7 +10,29 @@ public enum EnCharacterType
 public class DTCharacter
 {
     public int BaseHP { get; private set; }
-    public int CurrentHP;
+
+    int lastHP;
+    private int currentHP;
+    public int CurrentHP
+    {
+        get
+        {
+            return currentHP;
+        }
+        set
+        {
+            lastHP = currentHP;
+            currentHP = value;
+        }
+    }
+
+    public bool IsHPChanged
+    {
+        get
+        {
+            return !currentHP.Equals(lastHP);
+        }
+    }
     public EnCharacterType Type { get; private set; }
     public DTCharacter() { }
     public DTCharacter(Dictionary<string, object> data) { this.ParseData(data); }
@@ -23,5 +45,6 @@ public class DTCharacter
         BaseHP = baseHP;
         Type = type;
         CurrentHP = baseHP;
+        lastHP = CurrentHP;
     }
 }

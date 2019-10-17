@@ -45,11 +45,15 @@ public class CharacterAction
 }
 public class Character : MonoBehaviour
 {
+    [SerializeField] private Transform spine;
+    [SerializeField] private BattleHPBar hpBar;
+    public int SpawnId { get; protected set; }
     public Character ClosestEnemy { get; protected set; }
     public int AttackValue { get; private set; }
     SkeletonAnimation skeletonAnimation;
     MeshRenderer meshRender;
     public Vector2 Size { get; private set; }
+    public float SpineScale { get; private set; }
     public DTCharacter Data { get; private set; }
     public CircleUnit StandingBase { get; private set; }
 
@@ -57,15 +61,18 @@ public class Character : MonoBehaviour
     public System.Action<Character> OnCharacterDie;
     private void Awake()
     {
-        skeletonAnimation = GetComponent<SkeletonAnimation>();
-        meshRender = GetComponent<MeshRenderer>();
-        Size = meshRender.bounds.size;
+        skeletonAnimation = spine.GetComponent<SkeletonAnimation>();
+        meshRender = spine.GetComponent<MeshRenderer>();
     }
 
-    public virtual void SetData(DTCharacter data)
+    public virtual void SetData(int spawnId, DTCharacter data)
     {
         this.Data = data;
+        this.SpawnId = spawnId;
         skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.Idle, true, 0);
+        hpBar.Init(this);
+        Size = meshRender.bounds.size;
+        SpineScale = spine.transform.localScale.x;
     }
     public virtual void UpdateClosestEnemy(Character character)
     {
@@ -111,9 +118,9 @@ public class Character : MonoBehaviour
     public virtual void Attack(Character target)
     {
         bool isFlipX = target.transform.position.x > transform.position.x;
-        Vector3 scale = transform.localScale;
+        Vector3 scale = spine.localScale;
         scale.x = Mathf.Abs(scale.x) * (isFlipX ? -1 : 1);
-        transform.localScale = scale;
+        spine.localScale = scale;
         skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.Attack, false);
         skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.MoveBack, false, 0);
         skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.Idle, true, 0);
@@ -130,9 +137,10 @@ public class Character : MonoBehaviour
     public virtual void MoveTo(CircleUnit unit)
     {
         bool isFlipX = unit.Data.BasePosition.x > StandingBase.Data.BasePosition.x;
-        Vector3 scale = transform.localScale;
+        Vector3 scale = spine
+            .localScale;
         scale.x = Mathf.Abs(scale.x) * (isFlipX ? -1 : 1);
-        transform.localScale = scale;
+        spine.localScale = scale;
         skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.MoveBack, false);
         skeletonAnimation.AnimationState.AddAnimation(1, AnimationAction.Idle, true, 0);
     }

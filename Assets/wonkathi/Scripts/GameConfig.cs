@@ -11,4 +11,7 @@ public class GameConfig : MonoBehaviour
     public static int DefensorBaseHP = 30;
     public static int AttackerBaseHP = 10;
     public static float CharacterActionDuration = 1;
+    public static int InitialCameraSize = 10;
+    public static int PixelPerUnit = 64;
+    public static int DefaultRingCount = 6;
 }

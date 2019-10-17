@@ -21,16 +21,6 @@ public class CircleUnit : MonoBehaviour
         transform.localPosition = dTCircleUnit.BasePosition;
         Data = dTCircleUnit;
     }
-
-    /// <summary>
-    /// Temporary function to test hexagon
-    /// </summary>
-    /// <param name="color"></param>
-    public void ChangeColor(Color color)
-    {
-        Sprite.color = color;
-    }
-
     public void UpdateAdjacents(List<CircleUnit> units)
     {
         adjacents.Clear();
