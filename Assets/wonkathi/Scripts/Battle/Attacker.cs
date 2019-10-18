@@ -22,23 +22,29 @@ public class Attacker : Character
             return true;
         }
         float minDistance = Vector2.Distance(StandingBase.Data.BasePosition, ClosestEnemy.StandingBase.Data.BasePosition);
-        CircleUnit target = null;
+        CircleUnit targetMove = null;
+        Character targetAtk = null;
+        float targetAtkHP = GameConfig.DefensorBaseHP + 1;
         foreach(var a in adjacents)
         {
-            if (a.BookedCharacter != null)
-                continue;
-            if(a.Character != null && a.Character.Data.Type == EnCharacterType.Defensor)
+            if(a.Character != null && a.Character.Data.Type == EnCharacterType.Defensor && targetAtkHP > a.Character.Data.CurrentHP)
             {
-                Action.SetAction(EnCharacterAction.Attack, a.Character);
-                return true;
+                targetAtk = a.Character;
+                targetAtkHP = targetAtk.Data.CurrentHP;
+                continue;
             }
             if (CanMoveTo(a, ref minDistance))
-                target = a;
+                targetMove = a;
         }
-        if (target != null)
+        if(targetAtk != null)
         {
-            target.CharacterBook(this);
-            Action.SetAction(EnCharacterAction.Move, target);
+            Action.SetAction(EnCharacterAction.Attack, targetAtk);
+            return true;
+        }
+        if (targetMove != null)
+        {
+            targetMove.CharacterBook(this);
+            Action.SetAction(EnCharacterAction.Move, targetMove);
             return true;
         }
         return false;
@@ -46,7 +52,7 @@ public class Attacker : Character
 
     bool CanMoveTo(CircleUnit unit, ref float minDistance)
     {
-        if (unit.Character != null /*|| unit.Data.Round >= StandingBase.Data.Round*/)
+        if (unit.Character != null  || unit.BookedCharacter != null)
             return false;
         var distance = Vector2.Distance(unit.Data.BasePosition, ClosestEnemy.StandingBase.Data.BasePosition);
         if (distance < minDistance)

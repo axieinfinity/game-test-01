@@ -8,7 +8,7 @@ public class GameConfig : MonoBehaviour
     /// Define the hexagon's circle radius in Unity unit 
     /// </summary>
     public static int CircleUnitRadius = 1;
-    public static int DefensorBaseHP = 30;
+    public static int DefensorBaseHP = 40;
     public static int AttackerBaseHP = 10;
     public static float CharacterActionDuration = 1;
     public static int InitialCameraSize = 10;

@@ -11,15 +11,21 @@ public class Defensor : Character
     {
         base.CheckAction();
         var adjacents = StandingBase.Adjacents;
+        Character target = null;
+        float targetHP = GameConfig.AttackerBaseHP + 1;
         foreach (var a in adjacents)
         {
-            if (a.BookedCharacter != null)
-                continue;
-            if (a.Character != null && a.Character.Data.Type == EnCharacterType.Attacker)
+            if (a.Character != null && a.Character.Data.Type == EnCharacterType.Attacker && targetHP > a.Character.Data.CurrentHP)
             {
-                Action.SetAction(EnCharacterAction.Attack, a.Character);
-                return true;
+                target = a.Character;
+                targetHP = target.Data.CurrentHP;
+                continue;
             }
+        }
+        if(target != null)
+        {
+            Action.SetAction(EnCharacterAction.Attack, target);
+            return true;
         }
         return false;
     }

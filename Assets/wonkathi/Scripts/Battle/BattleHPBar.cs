@@ -8,6 +8,7 @@ public class BattleHPBar : MonoBehaviour
     Character character;
     float fillAmount;
     Vector3 hpPos;
+    float moveVel;
     public void Init(Character character)
     {
         this.character = character;
@@ -32,12 +33,17 @@ public class BattleHPBar : MonoBehaviour
         transform.position = pos;
         if (character.Data.IsHPChanged)
         {
-            EaseActionHelper.Inst.Value(fillAmount,
-                character.Data.CurrentHP / (float)character.Data.BaseHP,
-                0.3f,
-                OnHPChange);
+            //EaseActionHelper.Inst.Value(fillAmount,
+            //    character.Data.CurrentHP / (float)character.Data.BaseHP,
+            //    0.3f,
+            //    OnHPChange);
+            float newValue = character.Data.CurrentHP / (float)character.Data.BaseHP;
+            fillAmount = Mathf.SmoothDamp(fillAmount, newValue, ref moveVel, 0.3f);
         }
 
+        spriteHP.transform.localScale = new Vector3(fillAmount, 1, 1);
+        hpPos.x = -(1 - fillAmount) * spriteHP.size.x / 2f;
+        spriteHP.transform.localPosition = hpPos;
     }
 
     void OnHPChange(float current)
