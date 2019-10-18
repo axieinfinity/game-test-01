@@ -36,7 +36,6 @@ public class HexaGrid : MonoBehaviour
         new Vector2Int(-2, 0),
         new Vector2Int(-1, 1),
         new Vector2Int(1, 1)
-        
     };
 
     //for pooing
@@ -50,6 +49,7 @@ public class HexaGrid : MonoBehaviour
             character = Instantiate(characterPrefabs[(int)type], transform);
             character.gameObject.SetActive(true);
             _poolCharacterList.Add(character);
+            character.ResetStats();
 
             return character;
         }
@@ -59,6 +59,7 @@ public class HexaGrid : MonoBehaviour
             character = Instantiate(characterPrefabs[(int)type], transform);
             character.gameObject.SetActive(true);
             _poolCharacterList.Add(character);
+            character.ResetStats();
 
             return character;
         }
@@ -70,6 +71,7 @@ public class HexaGrid : MonoBehaviour
                 character = item;
                 character.gameObject.SetActive(true);
                 character.ResetStats();
+
                 return character;
             }
         }
@@ -77,6 +79,7 @@ public class HexaGrid : MonoBehaviour
         character = Instantiate(characterPrefabs[(int)type], transform);
         character.gameObject.SetActive(true);
         _poolCharacterList.Add(character);
+        character.ResetStats();
 
         return character;
     }
@@ -253,6 +256,8 @@ public class HexaGrid : MonoBehaviour
             character.UpdatePosition();
             _characterList.Add(character);
 
+            Game.Instance.DefTotalHP += character.MaxHp;
+
             return;
         }
 
@@ -291,6 +296,7 @@ public class HexaGrid : MonoBehaviour
                         unit.Character = character;
                         character.UpdatePosition();
                         _characterList.Add(character);
+                        Game.Instance.DefTotalHP += character.MaxHp;
                     } else if (rIdx == (radius + 1) / 2)
                     {
                         //mean center line, don't assign any character at the begining
@@ -303,6 +309,7 @@ public class HexaGrid : MonoBehaviour
                         unit.Character = character;
                         character.UpdatePosition();
                         _characterList.Add(character);
+                        Game.Instance.AtkTotalHP += character.MaxHp;
                     }
                 }
             }
@@ -459,6 +466,14 @@ public class HexaGrid : MonoBehaviour
         ReleaseCharacter(character);
         _characterList.Remove(character);
         _movableList.Remove(character);
+
+        if (character.Type == Character.CType.Defender)
+        {
+            Game.Instance.DefCurHP -= character.MaxHp;
+        } else
+        {
+            Game.Instance.AtkCurHP -= character.MaxHp;
+        }
     }
 
     public void FindAllMovableCharacters()

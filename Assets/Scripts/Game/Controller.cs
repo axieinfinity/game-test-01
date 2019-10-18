@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Controller : MonoBehaviour
 {   
@@ -13,6 +14,9 @@ public class Controller : MonoBehaviour
         In
     }
     private CZoomType _zoomType = CZoomType.None;
+    private bool _isTouched;
+    private Vector2 _dragStart;
+    private Vector3 _lastCamPos;
 
     private void Start() {
         ZoomButton.onPress += OnZoomButtonPress;
@@ -62,6 +66,63 @@ public class Controller : MonoBehaviour
         }
     }
     private void Update() {
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            Game.Instance.AttackSpeed += 1;
+            if (Game.Instance.AttackSpeed > 10)
+            {
+                Game.Instance.AttackSpeed = 10;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            Game.Instance.AttackSpeed -= 1;
+            if (Game.Instance.AttackSpeed < 0)
+            {
+                Game.Instance.AttackSpeed = 0;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene("Main");
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isTouched = true;
+            _dragStart = Input.mousePosition;
+            _lastCamPos = gameCamera.transform.localPosition;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            _isTouched = false;
+        }
+
+        if (_isTouched)
+        {
+            Vector2 currPos = Input.mousePosition;
+            Vector2 vDelta = currPos - _dragStart;
+
+            gameCamera.transform.localPosition = _lastCamPos + new Vector3(vDelta.x * 0.01f, vDelta.y * 0.01f, 0);
+        }
+
+
+        if (Input.mouseScrollDelta.magnitude > 0f)
+        {
+            if (Input.mouseScrollDelta.x > 0)
+            {
+                ZoomOut(Input.mouseScrollDelta.y);
+            } else
+            {
+                ZoomIn(Input.mouseScrollDelta.y);
+            }
+            return;
+        }
+
         if (_zoomType == CZoomType.None) {
             return;
         }

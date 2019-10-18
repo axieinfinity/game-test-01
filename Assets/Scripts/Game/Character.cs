@@ -55,6 +55,11 @@ public class Character : MonoBehaviour
         set => _currentHp = value;
     }
 
+    public int MaxHp
+    {
+        get => _maxHp;
+    }
+
     private int _attribute;
 
     public int Attribute
@@ -79,7 +84,7 @@ public class Character : MonoBehaviour
         if (trackEntry.TrackIndex == _currentTrackIdx)
         {
             //_currentTrackIdx = _currentTrackIdx == 0 ? _currentTrackIdx = 1 : _currentTrackIdx = 0;
-            //_skeletonAnimation.AnimationState.SetAnimation(_currentTrackIdx, "action/idle", true);
+            _skeletonAnimation.AnimationState.SetAnimation(_currentTrackIdx+1, "action/idle", true);
         }
     }
     public void OnSpineAnimationDispose(TrackEntry trackEntry)
@@ -95,7 +100,7 @@ public class Character : MonoBehaviour
     public void ResetStats()
     {
         //random attribute number
-        _attribute = Random.Range(0, 2);
+        _attribute = Random.Range(0, 3);
         _currentTimeCount = 0f;
         _currentMoveTimeCount = Game.Instance.AttackSpeed / 3.0f;
 
@@ -127,9 +132,10 @@ public class Character : MonoBehaviour
         _animationState.Complete += OnSpineAnimationComplete;
 
         //random attribute number
-        _attribute = Random.Range(0, 2);
+        _attribute = Random.Range(0, 3);
         _currentTimeCount = 0f;
         _currentMoveTimeCount = Game.Instance.AttackSpeed / 3.0f;
+        _animationState.TimeScale = Game.Instance.AttackSpeed / 2f;
 
         if (type == CType.Attacker)
         {

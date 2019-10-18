@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Game : SingletonMonoBehaviour<Game>
 {
-    [Header("Defautl Config")]
+    [Header("Default Config")]
     [SerializeField] HexaGrid battleGrid;
+    [SerializeField] UISprite attackerBar;
+    [SerializeField] UISprite defenderBar;
 
     [Header("Battle Config")]
     [SerializeField] int battleSize = 2; //default by 2 circles each side
@@ -14,6 +16,31 @@ public class Game : SingletonMonoBehaviour<Game>
     public float AttackSpeed
     {
         get => attackSpeed;
+        set => attackSpeed = value;
+    }
+
+    public int AtkTotalHP
+    {
+        get;
+        set;
+    }
+
+    public int DefTotalHP
+    {
+        get;
+        set;
+    }
+
+    public int AtkCurHP
+    {
+        get;
+        set;
+    }
+
+    public int DefCurHP
+    {
+        get;
+        set;
     }
 
     private List<Character> _characterList;
@@ -31,6 +58,7 @@ public class Game : SingletonMonoBehaviour<Game>
         int hexaGridRadius = battleSize * 2 + 1;
         battleGrid.Radius = hexaGridRadius;
         battleGrid.GenerateUnits();
+        InitHPBar();
 
         //battleGrid.HighLightNeightbourIndex(new Vector2Int(7, 7));
 
@@ -72,6 +100,12 @@ public class Game : SingletonMonoBehaviour<Game>
     private void CharacterDoDead(Character character)
     {
         battleGrid.RemoveCharacter(character);
+
+        float ratioAtk = (float)AtkCurHP / (float)AtkTotalHP;
+        float ratioDef = (float)DefCurHP / (float)DefTotalHP;
+
+        defenderBar.fillAmount = ratioDef;
+        attackerBar.fillAmount = ratioAtk;
     }
 
     private void Update()
@@ -84,5 +118,17 @@ public class Game : SingletonMonoBehaviour<Game>
 
             battleGrid.FindAllMovableCharacters();
         }
+    }
+
+    public void InitHPBar ()
+    {
+        AtkCurHP = AtkTotalHP;
+        DefCurHP = DefTotalHP;
+
+        float ratioAtk = (float)AtkCurHP / (float)AtkTotalHP;
+        float ratioDef = (float)DefCurHP / (float)DefTotalHP;
+        Debug.Log(string.Format("total {0}, {1}, {2}, {3}", AtkCurHP, AtkTotalHP, ratioAtk, ratioDef));
+        defenderBar.fillAmount = ratioDef;
+        attackerBar.fillAmount = ratioAtk;
     }
 }
