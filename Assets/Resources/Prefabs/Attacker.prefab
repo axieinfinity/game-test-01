@@ -312,7 +312,7 @@ MonoBehaviour:
   disableRenderingOnOverride: 1
   _animationName: action/idle
   loop: 1
-  timeScale: 1
+  timeScale: 2
 --- !u!1 &5378623018664051480
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,4 +358,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a11441c1f2e4415b1a368bd9842af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
+  hpBar: {fileID: 640505086}

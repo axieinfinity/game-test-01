@@ -27,6 +27,7 @@ public class HexaGrid : MonoBehaviour
     private Vector2 _center;
     private List<HexaUnit> _unitList;
     private List<Character> _characterList;
+    private List<Character> _movableList;
 
     private readonly Vector2Int[] _DIRECTION = {
         new Vector2Int(2, 0),
@@ -68,7 +69,7 @@ public class HexaGrid : MonoBehaviour
             {
                 character = item;
                 character.gameObject.SetActive(true);
-
+                character.ResetStats();
                 return character;
             }
         }
@@ -248,6 +249,7 @@ public class HexaGrid : MonoBehaviour
             //only one unit, spawn an Defender
             Character character = GetCharacter(Character.CType.Defender);
             character.HexaUnit = unit;
+            unit.Character = character;
             character.UpdatePosition();
             _characterList.Add(character);
 
@@ -286,6 +288,7 @@ public class HexaGrid : MonoBehaviour
                         //means Defender should be generated
                         Character character = GetCharacter(Character.CType.Defender);
                         character.HexaUnit = unit;
+                        unit.Character = character;
                         character.UpdatePosition();
                         _characterList.Add(character);
                     } else if (rIdx == (radius + 1) / 2)
@@ -297,6 +300,7 @@ public class HexaGrid : MonoBehaviour
                         //mean outside circles, Attacker shoudl be generated
                         Character character = GetCharacter(Character.CType.Attacker);
                         character.HexaUnit = unit;
+                        unit.Character = character;
                         character.UpdatePosition();
                         _characterList.Add(character);
                     }
@@ -305,17 +309,135 @@ public class HexaGrid : MonoBehaviour
         }
     }
 
-    private Character FindNearleastDefender(Character attacker)
+    public void MoveToAroundCharacter(Character attacker)
     {
-        Character defender = null;
+        if (_movableList != null)
+        {
+            if (!_movableList.Contains(attacker))
+            {
+                return;
+            }
+        }
 
-        
+        for (int i = 0; i < _DIRECTION.Length; ++i)
+        {
+            int iIdx = attacker.HexaUnit.Index.x + _DIRECTION[i].y;
+            int jIdx = attacker.HexaUnit.Index.y + _DIRECTION[i].x;
 
-        return defender;
+            Character character = FindCharacterByHexaIndex(new Vector2Int(iIdx, jIdx));
+            if (character == null)
+            {
+                continue;
+            }
+
+            if (character.Type != Character.CType.Defender)
+            {
+                continue;
+            }
+
+            //found first nearleast one, attack!
+            //attacker.Attack(character);
+            return;
+        }
+
+
+        //TODO: fix (optimize) when having time
+        //should find nearlest, temporary by time rush
+        float minDistance = float.MaxValue;
+        HexaUnit target = null;
+
+        foreach (Character item in _characterList)
+        {
+            if (item.Type == Character.CType.Attacker)
+            {
+                continue;
+            }
+
+            if (item.IsDead)
+            {
+                continue;
+            }
+
+            float d = Vector2.Distance(item.transform.localPosition, attacker.transform.localPosition);
+            if (d < minDistance)
+            {
+                HexaUnit unit = FindEmptyPosition(item);
+                if (unit != null)
+                {
+                    minDistance = d;
+                    target = unit;
+                }
+            }
+        }
+
+        if (target != null)
+            attacker.Move(target);
     }
 
-    private Character FindCharacterByHexaIndex(Vector2 hIdx)
+    public void ActionToAroundCharacter(Character attacker)
     {
+        //find around neighbours first
+        for (int i = 0; i < _DIRECTION.Length; ++i)
+        {
+            int iIdx = attacker.HexaUnit.Index.x + _DIRECTION[i].y;
+            int jIdx = attacker.HexaUnit.Index.y + _DIRECTION[i].x;
+
+            Character character = FindCharacterByHexaIndex(new Vector2Int(iIdx, jIdx));
+            if (character == null)
+            {
+                continue;
+            }
+
+            if (character.Type != Character.CType.Defender)
+            {
+                continue;
+            }
+
+            //found first nearleast one, attack!
+            attacker.Attack(character);
+            return;
+        }        
+    }
+
+    private HexaUnit FindEmptyPosition(Character target)
+    {
+        HexaUnit unit = null;
+        for (int i = 0; i < _DIRECTION.Length; ++i)
+        {
+            int iIdx = target.HexaUnit.Index.x + _DIRECTION[i].y;
+            int jIdx = target.HexaUnit.Index.y + _DIRECTION[i].x;
+
+            Character character = FindCharacterByHexaIndex(new Vector2Int(iIdx, jIdx));
+            if (character == null)
+            {
+                unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
+                break;
+            }
+        }
+
+        return unit;
+    }
+
+    private HexaUnit FindHexaUnitByHexaIndex(Vector2Int hIdx)
+    {
+        //TODO: Fix (optimize) when having time
+        HexaUnit unit = null;
+
+        foreach (HexaUnit item in _unitList)
+        {
+            if (item.Index.Equals(hIdx))
+            {
+                unit = item;
+                break;
+            }
+        }
+
+        return unit;
+    }
+
+    private Character FindCharacterByHexaIndex(Vector2Int hIdx)
+    {
+        //TODO: Fix (optimize) when having time
         Character character = null;
 
         foreach (Character item in _characterList)
@@ -329,5 +451,91 @@ public class HexaGrid : MonoBehaviour
 
         return character;
     }
+
+    public void RemoveCharacter(Character character)
+    {
+        ReleaseCharacter(character);
+        _characterList.Remove(character);
+        _movableList.Remove(character);
+    }
+
+    public void FindAllMovableCharacters()
+    {
+        if (_movableList == null) _movableList = new List<Character>();
+        _movableList.Clear();
+
+        foreach (Character item  in _characterList)
+        {
+            if (item.Type == Character.CType.Defender)
+            {
+                continue;
+            }
+
+            if (FindEmptyPosition(item) != null)
+            {
+                //item.HexaUnit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                _movableList.Add(item);
+            }
+        }
+
+        Debug.Log(string.Format("FindAllMovableCharacters - {0} - {1}", _movableList.Count, _characterList.Count));
+    }
+
+    
+    public void HighLightNeightbourIndex(Vector2Int center) {
+
+        {
+            HexaUnit unit = FindHexaUnitByHexaIndex(center);
+            unit.GetComponentInChildren<SpriteRenderer>().color = Color.green;
+        }
+
+        for (int i = 0; i < _DIRECTION.Length; ++i)
+        {
+            int iIdx = center.x + _DIRECTION[i].y;
+            int jIdx = center.y + _DIRECTION[i].x;
+
+            HexaUnit unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
+
+            if (unit != null)
+                unit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    [ContextMenu("Show Indxes 7")]
+    public void HighLightNeightbourIndex()
+    {
+
+        Vector2Int center = new Vector2Int(0, 0);
+        {
+            HexaUnit unit = FindHexaUnitByHexaIndex(center);
+            unit.GetComponentInChildren<SpriteRenderer>().color = Color.green;
+        }
+
+        for (int i = 0; i < _DIRECTION.Length; ++i)
+        {
+            int iIdx = center.x + _DIRECTION[i].y;
+            int jIdx = center.y + _DIRECTION[i].x;
+
+            HexaUnit unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
+
+            if (unit != null)
+                unit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    [ContextMenu("Show Indxes")]
+    public void ShowIndexes()
+    {
+        foreach (Character item in _characterList)
+        {
+            if (item.Type == Character.CType.Defender)
+            {
+                continue;
+            }
+
+            Debug.Log(string.Format("Attacker: {0}, {1}", item.HexaUnit.Index.x, item.HexaUnit.Index.y));
+        }
+    }
+
 }
  

@@ -9,6 +9,12 @@ public class HexaUnit : MonoBehaviour
 
     //index on Hexa Grid
     private Vector2Int _index = Vector2Int.zero;
+
+    public Character Character
+    {
+        get;
+        set;
+    }
     
     public Vector2Int Index
     {
@@ -20,15 +26,4 @@ public class HexaUnit : MonoBehaviour
     {
         if (_infoText) _infoText.text = string.Format("{0}, {1}", _index.x, _index.y);
     }
-
-    //center position
-    private Vector2 _center = Vector2.zero;
-
-    //list of 6 vertices' position
-    private List<Vector2> _points;
-
-    public void UpdatePositionInHexGrid () {
-        
-    }
-
 }
