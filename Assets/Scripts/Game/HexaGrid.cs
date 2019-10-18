@@ -411,7 +411,9 @@ public class HexaGrid : MonoBehaviour
             if (character == null)
             {
                 unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
-                break;
+
+                if (unit != null)
+                    break;
             }
         }
 
@@ -473,69 +475,9 @@ public class HexaGrid : MonoBehaviour
 
             if (FindEmptyPosition(item) != null)
             {
-                //item.HexaUnit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
                 _movableList.Add(item);
             }
         }
-
-        Debug.Log(string.Format("FindAllMovableCharacters - {0} - {1}", _movableList.Count, _characterList.Count));
     }
-
-    
-    public void HighLightNeightbourIndex(Vector2Int center) {
-
-        {
-            HexaUnit unit = FindHexaUnitByHexaIndex(center);
-            unit.GetComponentInChildren<SpriteRenderer>().color = Color.green;
-        }
-
-        for (int i = 0; i < _DIRECTION.Length; ++i)
-        {
-            int iIdx = center.x + _DIRECTION[i].y;
-            int jIdx = center.y + _DIRECTION[i].x;
-
-            HexaUnit unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
-
-            if (unit != null)
-                unit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
-        }
-    }
-
-    [ContextMenu("Show Indxes 7")]
-    public void HighLightNeightbourIndex()
-    {
-
-        Vector2Int center = new Vector2Int(0, 0);
-        {
-            HexaUnit unit = FindHexaUnitByHexaIndex(center);
-            unit.GetComponentInChildren<SpriteRenderer>().color = Color.green;
-        }
-
-        for (int i = 0; i < _DIRECTION.Length; ++i)
-        {
-            int iIdx = center.x + _DIRECTION[i].y;
-            int jIdx = center.y + _DIRECTION[i].x;
-
-            HexaUnit unit = FindHexaUnitByHexaIndex(new Vector2Int(iIdx, jIdx));
-
-            if (unit != null)
-                unit.GetComponentInChildren<SpriteRenderer>().color = Color.red;
-        }
-    }
-
-    [ContextMenu("Show Indxes")]
-    public void ShowIndexes()
-    {
-        foreach (Character item in _characterList)
-        {
-            if (item.Type == Character.CType.Defender)
-            {
-                continue;
-            }
-
-            Debug.Log(string.Format("Attacker: {0}, {1}", item.HexaUnit.Index.x, item.HexaUnit.Index.y));
-        }
-    }
-
 }
  

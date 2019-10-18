@@ -32,7 +32,7 @@ public class Game : SingletonMonoBehaviour<Game>
         battleGrid.Radius = hexaGridRadius;
         battleGrid.GenerateUnits();
 
-        battleGrid.HighLightNeightbourIndex(new Vector2Int(7, 7));
+        //battleGrid.HighLightNeightbourIndex(new Vector2Int(7, 7));
 
         _currentTimeCount = attackSpeed / 3.0f * 2.0f;
     }
