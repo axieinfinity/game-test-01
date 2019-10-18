@@ -18,7 +18,8 @@ public class DownloadTexture : MonoBehaviour
 
 	Texture2D mTex;
 
-	IEnumerator Start ()
+    [System.Obsolete]
+    IEnumerator Start ()
 	{
 		WWW www = new WWW(url);
 		yield return www;

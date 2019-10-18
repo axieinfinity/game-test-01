@@ -1,13 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HexaUnit : MonoBehaviour
 {
+    [SerializeField] Text _infoText = null;
+
     //index on Hexa Grid
-    public Vector2 Index {
-        get;
-        set;
+    private Vector2Int _index = Vector2Int.zero;
+    
+    public Vector2Int Index
+    {
+        get => _index;
+        set => _index = value;
+    }
+
+    public void UpdateInfo ()
+    {
+        if (_infoText) _infoText.text = string.Format("{0}, {1}", _index.x, _index.y);
     }
 
     //center position
@@ -15,11 +26,6 @@ public class HexaUnit : MonoBehaviour
 
     //list of 6 vertices' position
     private List<Vector2> _points;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void UpdatePositionInHexGrid () {
         
