@@ -22,9 +22,11 @@ public class HexaGrid : MonoBehaviour
         set => radius = value;
     }
 
+    private List<HexaUnit> _poolUnitList;
+    private List<Character> _poolCharacterList;
+    private Vector2 _center;
     private List<HexaUnit> _unitList;
     private List<Character> _characterList;
-    private Vector2 _center;
 
     private readonly Vector2Int[] _DIRECTION = {
         new Vector2Int(2, 0),
@@ -42,25 +44,25 @@ public class HexaGrid : MonoBehaviour
     {
         Character character;
 
-        if (_characterList == null)
+        if (_poolCharacterList == null)
         {
             character = Instantiate(characterPrefabs[(int)type], transform);
             character.gameObject.SetActive(true);
-            _characterList.Add(character);
+            _poolCharacterList.Add(character);
 
             return character;
         }
 
-        if (_characterList.Count == 0)
+        if (_poolCharacterList.Count == 0)
         {
             character = Instantiate(characterPrefabs[(int)type], transform);
             character.gameObject.SetActive(true);
-            _characterList.Add(character);
+            _poolCharacterList.Add(character);
 
             return character;
         }
 
-        foreach (var item in _characterList)
+        foreach (var item in _poolCharacterList)
         {
             if (!item.gameObject.activeSelf && item.Type == type)
             {
@@ -73,7 +75,7 @@ public class HexaGrid : MonoBehaviour
 
         character = Instantiate(characterPrefabs[(int)type], transform);
         character.gameObject.SetActive(true);
-        _characterList.Add(character);
+        _poolCharacterList.Add(character);
 
         return character;
     }
@@ -90,25 +92,25 @@ public class HexaGrid : MonoBehaviour
     {
         HexaUnit unit;
 
-        if (_unitList == null)
+        if (_poolUnitList == null)
         {
             unit = Instantiate(unitPrefab, transform);
             unit.gameObject.SetActive(true);
-            _unitList.Add(unit);
+            _poolUnitList.Add(unit);
 
             return unit;
         }
 
-        if (_unitList.Count == 0)
+        if (_poolUnitList.Count == 0)
         {
             unit = Instantiate(unitPrefab, transform);
             unit.gameObject.SetActive(true);
-            _unitList.Add(unit);
+            _poolUnitList.Add(unit);
 
             return unit;
         }
 
-        foreach (var item in _unitList)
+        foreach (var item in _poolUnitList)
         {
             if (!item.gameObject.activeSelf)
             {
@@ -121,7 +123,7 @@ public class HexaGrid : MonoBehaviour
 
         unit = Instantiate(unitPrefab, transform);
         unit.gameObject.SetActive(true);
-        _unitList.Add(unit);
+        _poolUnitList.Add(unit);
 
         return unit;
 
@@ -137,26 +139,26 @@ public class HexaGrid : MonoBehaviour
     //clear Hexagrid and destroy all units
     public void Clear ()
     {
-        if (_unitList != null && _unitList.Count > 0)
+        if (_poolUnitList != null && _poolUnitList.Count > 0)
         {
             //clear all before create new ones
-            foreach (var item in _unitList)
+            foreach (var item in _poolUnitList)
             {
                 DestroyImmediate(item.gameObject, false);
             }
 
-            _unitList.Clear();
+            _poolUnitList.Clear();
         }
 
-        if (_characterList != null && _characterList.Count > 0)
+        if (_poolCharacterList != null && _poolCharacterList.Count > 0)
         {
             //clear all before create new ones
-            foreach (var item in _characterList)
+            foreach (var item in _poolCharacterList)
             {
                 DestroyImmediate(item.gameObject, false);
             }
 
-            _characterList.Clear();
+            _poolCharacterList.Clear();
         }
     }
 
@@ -171,15 +173,15 @@ public class HexaGrid : MonoBehaviour
         }
 
 		//for sure, if null, allocate first
-		if (_unitList == null)
+		if (_poolUnitList == null)
         {
-            _unitList = new List<HexaUnit>();
+            _poolUnitList = new List<HexaUnit>();
         } else
         {
-            if (_unitList.Count > 0)
+            if (_poolUnitList.Count > 0)
             {
                 //clear all before create new ones
-                foreach (var item in _unitList)
+                foreach (var item in _poolUnitList)
                 {
                     //because objects are deactived sequency,
                     //break if found first deactived one
@@ -205,16 +207,16 @@ public class HexaGrid : MonoBehaviour
         }
 
         //for sure, if null, allocate first
-        if (_characterList == null)
+        if (_poolCharacterList == null)
         {
-            _characterList = new List<Character>();
+            _poolCharacterList = new List<Character>();
         }
         else
         {
-            if (_characterList.Count > 0)
+            if (_poolCharacterList.Count > 0)
             {
                 //clear all before create new ones
-                foreach (var item in _characterList)
+                foreach (var item in _poolCharacterList)
                 {
                     ReleaseCharacter(item);
                 }
@@ -223,6 +225,13 @@ public class HexaGrid : MonoBehaviour
 
         //get center from grid base position
         _center = transform.localPosition;
+
+        //clear Old lists
+        if (_unitList == null) _unitList = new List<HexaUnit>();
+        _unitList.Clear();
+
+        if (_characterList == null) _characterList = new List<Character>();
+        _characterList.Clear();
 
         //pre-calculate hexaunit's size
         float sizeW = Mathf.Sqrt(3f) * size; 
@@ -235,11 +244,12 @@ public class HexaGrid : MonoBehaviour
             unit.Index = Vector2Int.zero;
             unit.UpdateInfo();
             unit.transform.localPosition = _center;
-
+            _unitList.Add(unit);
             //only one unit, spawn an Defender
             Character character = GetCharacter(Character.CType.Defender);
             character.HexaUnit = unit;
             character.UpdatePosition();
+            _characterList.Add(character);
 
             return;
         }
@@ -267,6 +277,7 @@ public class HexaGrid : MonoBehaviour
                     float pY = _center.y + i * sizeH * 0.75f;
                     Vector2 uCenter = new Vector2(pX, pY);
                     unit.transform.localPosition = uCenter;
+                    _unitList.Add(unit);
                     float d = Vector2.Distance(uCenter, _center);
                     int rIdx = (int)(d / (sizeH * 0.75f));
 
@@ -276,9 +287,10 @@ public class HexaGrid : MonoBehaviour
                         Character character = GetCharacter(Character.CType.Defender);
                         character.HexaUnit = unit;
                         character.UpdatePosition();
+                        _characterList.Add(character);
                     } else if (rIdx == (radius + 1) / 2)
                     {
-                        //mean center line, don't do anything
+                        //mean center line, don't assign any character at the begining
                         
                     } else
                     {
@@ -286,10 +298,36 @@ public class HexaGrid : MonoBehaviour
                         Character character = GetCharacter(Character.CType.Attacker);
                         character.HexaUnit = unit;
                         character.UpdatePosition();
+                        _characterList.Add(character);
                     }
                 }
             }
         }
+    }
+
+    private Character FindNearleastDefender(Character attacker)
+    {
+        Character defender = null;
+
+        
+
+        return defender;
+    }
+
+    private Character FindCharacterByHexaIndex(Vector2 hIdx)
+    {
+        Character character = null;
+
+        foreach (Character item in _characterList)
+        {
+            if (item.HexaUnit.Index.Equals(hIdx))
+            {
+                character = item;
+                break;
+            }
+        }
+
+        return character;
     }
 }
  

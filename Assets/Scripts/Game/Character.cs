@@ -58,9 +58,11 @@ public class Character : MonoBehaviour
 
     public void UpdatePosition ()
     {
+        //check again for edit mode
         if (_transform == null) _transform = transform;
         _transform.localPosition = HexaUnit.transform.localPosition;
 
+        //flip characters, make them look like ready to fight with others
         if (_transform.localPosition.x < 0)
         {
             if (type == CType.Attacker)
@@ -82,5 +84,22 @@ public class Character : MonoBehaviour
                 _transform.localScale = new Vector2(1, 1);
             }
         }
+    }
+
+    private void Update()
+    {
+        _currentTimeCount += Time.deltaTime;
+
+        if (_currentTimeCount > 1f)
+        {
+            _currentTimeCount -= 1f;
+
+            Action();
+        }
+    }
+
+    private void Action ()
+    {
+
     }
 }

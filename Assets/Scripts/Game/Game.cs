@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Game : MonoBehaviour
+public class Game : SingletonMonoBehaviour<Game>
 {
+    [Header("Defautl Config")]
     [SerializeField] HexaGrid battleGrid;
 
     [Header("Battle Config")]
     [SerializeField] int battleSize = 2; //default by 2 circles each side
+    [SerializeField] float attackSpeed = 1f; //all character had common attackspeed
 
     private List<Character> _characterList;
 
