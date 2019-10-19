@@ -131,6 +131,8 @@ public class BattleController : MonoBehaviour
     }
     void BackToMenu()
     {
+        IsPausedGame = false;
+        isEndGame = false;
         IsReady = false;
         ClearCharacters();
         ClearUnits();
