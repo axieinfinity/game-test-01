@@ -50,7 +50,7 @@ public class Character : MonoBehaviour
     public int SpawnId { get; protected set; }
     public Character ClosestEnemy { get; protected set; }
     public int AttackValue { get; private set; }
-    SkeletonAnimation skeletonAnimation;
+    protected SkeletonAnimation skeletonAnimation;
     MeshRenderer meshRender;
     public Vector2 Size { get; private set; }
     public float SpineScale { get; private set; }
@@ -59,6 +59,7 @@ public class Character : MonoBehaviour
 
     protected CharacterAction Action = new CharacterAction();
     public System.Action<Character> OnCharacterDie;
+    protected float moveSpeed;
     private void Awake()
     {
         skeletonAnimation = spine.GetComponent<SkeletonAnimation>();
@@ -121,14 +122,13 @@ public class Character : MonoBehaviour
         Vector3 scale = spine.localScale;
         scale.x = Mathf.Abs(scale.x) * (isFlipX ? -1 : 1);
         spine.localScale = scale;
-        skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.Attack, false);
         skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.MoveBack, false, 0);
         skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.Idle, true, 0);
     }
     public virtual void GotHit(Character enemy, int damage)
     {
-        skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.GotHit, false);
-        skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.Idle, true, 0);
+        //skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.GotHit, false);
+        //skeletonAnimation.AnimationState.AddAnimation(0, AnimationAction.Idle, true, 0);
         Data.CurrentHP -= damage;
         if (Data.CurrentHP <= 0)
             Die();
@@ -137,17 +137,21 @@ public class Character : MonoBehaviour
     public virtual void MoveTo(CircleUnit unit)
     {
         bool isFlipX = unit.Data.BasePosition.x > StandingBase.Data.BasePosition.x;
-        Vector3 scale = spine
-            .localScale;
+        Vector3 scale = spine.localScale;
         scale.x = Mathf.Abs(scale.x) * (isFlipX ? -1 : 1);
         spine.localScale = scale;
         skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.MoveBack, false);
         skeletonAnimation.AnimationState.AddAnimation(1, AnimationAction.Idle, true, 0);
     }
-    public void Die()
+    public virtual void Die()
     {
         StandingBase.UpdateCharacter(null);
         if (OnCharacterDie != null)
             OnCharacterDie.Invoke(this);
+        skeletonAnimation.AnimationState.SetAnimation(0, AnimationAction.Sleep, true);
+        var color = meshRender.material.color;
+        color.a = 0.5f;
+        meshRender.material.color = color;
+        hpBar.gameObject.SetActive(false);
     }
 }

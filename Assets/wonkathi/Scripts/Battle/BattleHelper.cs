@@ -21,13 +21,6 @@ public class DTCircleUnit
     /// Circle Index in round
     /// </summary>
     public Vector2Int HexPoint { get; private set; }
-
-    //private List<DTCircleUnit> adjacents = new List<DTCircleUnit>();
-    //public ReadOnlyCollection<DTCircleUnit> Adjacents
-    //{
-    //    get;
-    //    private set;
-    //}
     public DTCircleUnit() { }
     public DTCircleUnit(int round, Vector2Int hexPoint, Vector2 basePosition)
     {
@@ -35,12 +28,6 @@ public class DTCircleUnit
         this.BasePosition = basePosition;
         this.HexPoint = hexPoint;
     }
-    //public void UpdateAdjacents(List<DTCircleUnit> adjacents)
-    //{
-    //    this.adjacents.Clear();
-    //    this.adjacents.AddRange(adjacents);
-    //    this.Adjacents = this.adjacents.AsReadOnly();
-    //}
 }
 public class BattleHelper
 {
@@ -88,14 +75,22 @@ public class BattleHelper
         return result;
     }
 
-    public List<DTCircleUnit> GenerationHexagon(int round = 6, float circleRadius = 1f)
+    /// <summary>
+    /// Generate completely a hexagon
+    /// </summary>
+    /// <param name="ringCount"></param>
+    /// How many ring will be generated
+    /// <param name="circleRadius"></param>
+    /// radius of 1 circle unit
+    /// <returns></returns>
+    public List<DTCircleUnit> GenerationHexagon(int ringCount = 6, float circleRadius = 1f)
     {
         List<DTCircleUnit> result = new List<DTCircleUnit>();
-        if (round < 1)
+        if (ringCount < 1)
             return result;
         DTCircleUnit circleUnit = new DTCircleUnit(0, new Vector2Int(0,0), Vector2.zero);
         result.Add(circleUnit);
-        for (int i = 1; i < round; i++)
+        for (int i = 1; i < ringCount; i++)
         {
             var ring = GetHexRing(Vector2.zero, i, circleRadius);
             result.AddRange(ring);
@@ -103,6 +98,14 @@ public class BattleHelper
         return result;
     }
 
+    /// <summary>
+    /// Find all adjacents of one unit (maximum is 6)
+    /// </summary>
+    /// <param name="units"></param>
+    /// All units in hexagon
+    /// <param name="hexCenter"></param>
+    /// the hex point of unit which need to find
+    /// <returns></returns>
     public List<DTCircleUnit> GetAdjacents(List<DTCircleUnit> units, Vector2Int hexCenter)
     {
         List<DTCircleUnit> adjacents = new List<DTCircleUnit>();
@@ -116,6 +119,14 @@ public class BattleHelper
         return adjacents;
     }
 
+    /// <summary>
+    /// Convert hex point to world point
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="size"></param>
+    /// <param name="flatTop"></param>
+    /// <returns></returns>
     Vector2 HexToPoint(int x, int y, float size, bool flatTop = true)
     {
         Vector2 result = Vector2.zero;
@@ -169,6 +180,13 @@ public class BattleHelper
         }
         return result;
     }
+
+    /// <summary>
+    /// Find 1 hex neighbor with (direction) index
+    /// </summary>
+    /// <param name="sourceHex"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     Vector2Int HexNeighbor(Vector2Int sourceHex, int index)
     {
         Vector2Int dir = HexDirections[index];

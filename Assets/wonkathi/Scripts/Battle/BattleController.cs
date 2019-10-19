@@ -5,36 +5,41 @@ using UnityEngine;
 
 public class BattleController : MonoBehaviour
 {
+    /// <summary>
+    /// MiniMap of the game.
+    /// </summary>
     [SerializeField] private MiniMap miniMap;
+    /// <summary>
+    /// Viewmanager. Handle drag and zoom
+    /// </summary>
     [SerializeField] private BattleViewManager viewManager;
+    /// <summary>
+    /// Main camera in battle
+    /// </summary>
     [SerializeField] private Camera battleCamera;
+    /// <summary>
+    /// Handle UI of the battle
+    /// </summary>
     [SerializeField] private BattleUI battleUI;
+    /// <summary>
+    /// The main menu UI
+    /// </summary>
     [SerializeField] private MainMenuView menuView;
+    /// <summary>
+    /// Parent transform contains the hexagon objects
+    /// </summary>
     [SerializeField] private Transform hexagonZone;
+    /// <summary>
+    /// Prefab of 1 circle unit
+    /// </summary>
     [SerializeField] private CircleUnit prefabCircleUnit;
+    /// <summary>
+    /// Prefab of the characters
+    /// </summary>
     [SerializeField] private Character prefabDefensor, prefabAttacker;
     List<CircleUnit> units = new List<CircleUnit>();
     List<Character> defensors = new List<Character>();
     List<Character> attackers = new List<Character>();
-
-    public ReadOnlyCollection<Character> RODefensors
-    {
-        get
-        {
-            return defensors.AsReadOnly();
-        }
-    }
-    public ReadOnlyCollection<Character> ROAttackers
-    {
-        get
-        {
-            return attackers.AsReadOnly();
-        }
-    }
-    public Camera BattleCamera { get { return battleCamera; } }
-
-    int currentSpawnId;
-
     public int RingCount { get; private set; }
     public float FPS { get; private set; }
     public int AttackterTotalHP { get; private set; }
@@ -45,6 +50,7 @@ public class BattleController : MonoBehaviour
     public int GameSpeed { get; private set; }
     public bool IsReady { get; private set; }
     public bool IsShowingLargestMap { get; private set; }
+    public bool IsFinishedGenLargestMap { get; private set; }
     public int CharacterCount
     {
         get
@@ -56,6 +62,9 @@ public class BattleController : MonoBehaviour
     int minRing = 1000;
     float timer;
     bool isEndGame;
+    int currentSpawnId;
+
+    #region Init
     private void OnEnable()
     {
         prefabCircleUnit.gameObject.SetActive(false);
@@ -65,6 +74,7 @@ public class BattleController : MonoBehaviour
         battleUI.OnChangeSpeedAction = ChangeSpeed;
         battleUI.OnReplayAction = Replay;
         battleUI.OnBackToMenuAction = BackToMenu;
+        battleUI.OnZoomAction = Zoom;
         menuView.OnDemoAction = ShowDefaultMap;
         menuView.OnShowLargestMapAction = ShowLargestMap;
         miniMap.gameObject.SetActive(false);
@@ -76,6 +86,7 @@ public class BattleController : MonoBehaviour
     void Init()
     {
         IsShowingLargestMap = false;
+        IsFinishedGenLargestMap = false;
         IsPausedGame = false;
         IsReady = false;
         GameSpeed = 1;
@@ -83,25 +94,9 @@ public class BattleController : MonoBehaviour
         isEndGame = false;
         Time.timeScale = 1;
     }
+    #endregion
 
-    void InitMap(int ringCount)
-    {
-        if (ringCount < 6 || ringCount % 2 != 0)
-            RingCount = 6;
-        else
-            RingCount = ringCount;
-
-        DrawHexagon(RingCount);
-        AddFormation(RingCount);
-        Vector2 size = new Vector2(2 * (RingCount * 2 - 1), 2 * (RingCount * 2 - 1));
-        viewManager.UpdateMapSize(size);
-        miniMap.UpdateMapSize(size);
-    }
-    private void OnDisable()
-    {
-        
-    }
-
+    #region Main Actions
     void ShowDefaultMap()
     {
         IsShowingLargestMap = false;
@@ -110,6 +105,7 @@ public class BattleController : MonoBehaviour
     }
     void ShowLargestMap()
     {
+        IsFinishedGenLargestMap = false;
         IsShowingLargestMap = true;
         battleUI.gameObject.SetActive(true);
         InitMap(6);
@@ -138,15 +134,21 @@ public class BattleController : MonoBehaviour
         IsReady = false;
         ClearCharacters();
         ClearUnits();
-        BattleCamera.orthographicSize = GameConfig.InitialCameraSize;
+        battleCamera.orthographicSize = GameConfig.InitialCameraSize;
         Time.timeScale = 1;
+        battleCamera.transform.localPosition = new Vector3(0, 0, -10);
         battleUI.gameObject.SetActive(false);
         miniMap.gameObject.SetActive(false);
         menuView.gameObject.SetActive(true);
     }
+    void Zoom(bool isZoomIn)
+    {
+        viewManager.Zoom(isZoomIn);
+    }
+    #endregion
     private void Update()
     {
-        if (IsPausedGame || !IsReady)
+        if (!IsReady)
             return;
         float msec = Time.deltaTime * 1000.0f;
         FPS = 1.0f / Time.deltaTime;
@@ -161,33 +163,32 @@ public class BattleController : MonoBehaviour
                     IncreaseHexagon();
                 else
                 {
-                    DecreaseHexagon();
+                    if (minRing > RingCount) //Finish Find Largest Map 
+                    {
+                        Zoom(false);
+                        IsFinishedGenLargestMap = true;
+                    }
                     minRing = RingCount;
                 }
             } else
                 CheckCharacterAction();
         }
     }
-    void IncreaseHexagon()
-    {
-        if (RingCount < 6)
-            RingCount = 6;
-        else RingCount += 2;
-        if (RingCount >= minRing)
-        {
-            RingCount = minRing;
-            return;
-        }
-        InitMap(RingCount);
-    }
-    void DecreaseHexagon()
-    {
-        if (RingCount < 8)
-            RingCount = 6;
-        else RingCount -= 2;
-        InitMap(RingCount);
-    }
 
+    #region Generate Map Logic
+    void InitMap(int ringCount)
+    {
+        if (ringCount < 6 || ringCount % 2 != 0)
+            RingCount = 6;
+        else
+            RingCount = ringCount;
+
+        DrawHexagon(RingCount);
+        AddFormation(RingCount);
+        Vector2 size = new Vector2(2 * (RingCount * 2 - 1), 2 * (RingCount * 2 - 1));
+        viewManager.UpdateMapSize(size);
+        miniMap.UpdateMapSize(size);
+    }
     void DrawHexagon(int ringCount)
     {
         ClearUnits();
@@ -216,6 +217,25 @@ public class BattleController : MonoBehaviour
             unit.UpdateAdjacents(adjacentUnits);
             adjacentUnits.Clear();
         }
+    }
+    void IncreaseHexagon()
+    {
+        if (RingCount < 6)
+            RingCount = 6;
+        else RingCount += 2;
+        if (RingCount >= minRing)
+        {
+            RingCount = minRing;
+            return;
+        }
+        InitMap(RingCount);
+    }
+    void DecreaseHexagon()
+    {
+        if (RingCount < 8)
+            RingCount = 6;
+        else RingCount -= 2;
+        InitMap(RingCount);
     }
     void AddFormation(List<int> defensorRounds, List<int> attackerRounds)
     {
@@ -320,6 +340,17 @@ public class BattleController : MonoBehaviour
             }
         }
     }
+    void ClearUnits()
+    {
+        foreach (var u in units)
+        {
+            Destroy(u.gameObject);
+        }
+        units.Clear();
+    }
+    #endregion
+
+    #region General Character Logic
     Character FindClosestDefensor(Character character)
     {
         Character defensor = null;
@@ -347,9 +378,8 @@ public class BattleController : MonoBehaviour
         if (character.Data.Type == EnCharacterType.Defensor)
             defensors.Remove(character);
         else attackers.Remove(character);
-        Destroy(character.gameObject);
+        Destroy(character.gameObject, 0.5f);
     }
-
     void ClearCharacters()
     {
         foreach(var c in defensors)
@@ -365,12 +395,5 @@ public class BattleController : MonoBehaviour
         defensors.Clear();
         attackers.Clear();
     }
-    void ClearUnits()
-    {
-        foreach (var u in units)
-        {
-            Destroy(u.gameObject);
-        }
-        units.Clear();
-    }
+    #endregion
 }

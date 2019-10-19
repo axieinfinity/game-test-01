@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handle minimap logic
+/// </summary>
 public class MiniMap : MonoBehaviour
 {
     [SerializeField] SpriteRenderer miniMapBG;
@@ -13,11 +16,14 @@ public class MiniMap : MonoBehaviour
     private void OnEnable()
     {
         prefabDot.gameObject.SetActive(false);
-        var screenUnitSize = new Vector2(Screen.width / GameConfig.PixelPerUnit, Screen.height / GameConfig.PixelPerUnit);
+        //OrthographicSize relate to height. Fix height to design resolution and calculate the width
+        float newWidth = (Screen.width * GameConfig.DesignResolution.y) / Screen.height;
+        Vector2 screenUnitSize = new Vector2(newWidth / GameConfig.PixelPerUnit, GameConfig.DesignResolution.y / GameConfig.PixelPerUnit);
         dotZone.transform.position = new Vector3((screenUnitSize.x - miniMapBG.size.x) / 2f, (screenUnitSize.y - miniMapBG.size.y) / 2f);
     }
     public void UpdateMapSize(Vector2 mapSize)
     {
+        //Change minimap camera size base on mapSize to fit the fixed minimap background's size
         float miniMapScale = mapSize.y / (0.9f*miniMapBG.size.y);
         miniMapCamera.orthographicSize = GameConfig.InitialCameraSize * miniMapScale;
         miniMapCamera.transform.position = new Vector3(-dotZone.transform.position.x * miniMapScale, -dotZone.transform.position.y * miniMapScale, -1);
@@ -37,7 +43,6 @@ public class MiniMap : MonoBehaviour
             dots.Remove(character.SpawnId);
         }
     }
-
     private void Update()
     {
         foreach(var dot in dots.Values)

@@ -14,4 +14,5 @@ public class GameConfig : MonoBehaviour
     public static int InitialCameraSize = 10;
     public static int PixelPerUnit = 64;
     public static int DefaultRingCount = 6;
+    public static Vector2 DesignResolution = new Vector2(720, 1280);
 }

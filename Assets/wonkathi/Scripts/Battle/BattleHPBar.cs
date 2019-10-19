@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manager hp bar of the character
+/// </summary>
 public class BattleHPBar : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteHP;
@@ -16,41 +19,23 @@ public class BattleHPBar : MonoBehaviour
         fillAmount = 1;
         hpPos = Vector3.zero;
     }
-
     private void Update()
     {
-        if (character == null)
+        if (character == null || character.Data == null)
         {
             return;
         }
-        //var pos = BattleController.Inst.BattleCamera.WorldToScreenPoint(character.transform.position + new Vector3(0, 2, 0));
-        //float scale = GameConfig.InitialCameraSize / (float)BattleController.Inst.BattleCamera.orthographicSize;
-        //transform.localScale = new Vector3(scale, scale, scale);
-        //pos.z = 0;
-        //transform.position = pos;
         var pos = character.transform.position;
         pos.y += character.Size.y * character.transform.localScale.y;
         transform.position = pos;
         if (character.Data.IsHPChanged)
         {
-            //EaseActionHelper.Inst.Value(fillAmount,
-            //    character.Data.CurrentHP / (float)character.Data.BaseHP,
-            //    0.3f,
-            //    OnHPChange);
             float newValue = character.Data.CurrentHP / (float)character.Data.BaseHP;
             fillAmount = Mathf.SmoothDamp(fillAmount, newValue, ref moveVel, 0.3f);
         }
 
         spriteHP.transform.localScale = new Vector3(fillAmount, 1, 1);
         hpPos.x = -(1 - fillAmount) * spriteHP.size.x / 2f;
-        spriteHP.transform.localPosition = hpPos;
-    }
-
-    void OnHPChange(float current)
-    {
-        fillAmount = current;
-        spriteHP.transform.localScale = new Vector3(current, 1, 1);
-        hpPos.x = -(1 - current)*spriteHP.size.x/2f;
         spriteHP.transform.localPosition = hpPos;
     }
 }
