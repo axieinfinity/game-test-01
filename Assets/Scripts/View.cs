@@ -54,8 +54,7 @@ public partial class View : MonoBehaviour
             ||
             (transform.localPosition.x > 0 && data.type == CellType.Defender))
         {
-            transform.localScale = new Vector3(-Math.Abs(transform.localScale.x), transform.localScale.y,
-                transform.localScale.z);
+            currentView.skeleton.flipX = true;
         }
     }
 
@@ -67,13 +66,11 @@ public partial class View : MonoBehaviour
             var delta = target.x - transform.localPosition.x;
             if (delta > 0)
             {
-                transform.localScale = new Vector3(-Math.Abs(transform.localScale.x), transform.localScale.y,
-                    transform.localScale.z);
+                currentView.skeleton.flipX = true;
             }
             else
             {
-                transform.localScale = new Vector3(Math.Abs(transform.localScale.x), transform.localScale.y,
-                    transform.localScale.z);
+                currentView.skeleton.flipX = false;
             }
         }
     }
